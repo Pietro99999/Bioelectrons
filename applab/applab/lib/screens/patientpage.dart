@@ -1,8 +1,8 @@
-import 'package:prova_homepagepaz/models/modifypatient.dart';
+import 'package:applab/models/modifypatient.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:prova_homepagepaz/models/patient.dart';
-import 'package:prova_homepagepaz/utils/format.dart';
+import 'package:applab/models/patient.dart';
+import 'package:applab/utils/format.dart';
 
 class PatientPage extends StatefulWidget {
     final int patientIndex;
