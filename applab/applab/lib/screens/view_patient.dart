@@ -1,6 +1,6 @@
 
 import 'package:flutter/material.dart';
-import 'package:prova_homepagepaz/models/modifypatient.dart';
+import 'package:applab/models/modifypatient.dart';
 
 class PatientHome extends StatelessWidget {
    final int patientIndex;
