@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart' ;
-import 'package:prova_homepagepaz/models/patient.dart';
+import 'package:applab/models/patient.dart';
 
 
 class ModifyPatient extends ChangeNotifier{
