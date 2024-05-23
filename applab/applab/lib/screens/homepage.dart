@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:prova_homepagepaz/models/modifypatient.dart';
-import 'package:prova_homepagepaz/screens/view_patient.dart';
+import 'package:applab/models/modifypatient.dart';
+import 'package:applab/screens/view_patient.dart';
 import 'package:provider/provider.dart';
-import 'package:prova_homepagepaz/screens/patientpage.dart';
+import 'package:applab/screens/patientpage.dart';
 
 //Homepage screen
 class HomePage extends StatelessWidget {
