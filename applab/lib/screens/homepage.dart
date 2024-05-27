@@ -1,11 +1,9 @@
-import 'package:applab/models/archivie.dart';
-import 'package:applab/models/patientArchieve.dart';
 import 'package:applab/screens/login.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/models/modifypatient.dart';
 import 'package:applab/screens/view_patient.dart';
-import 'package:provider/provider.dart'; 
+import 'package:provider/provider.dart';
 import 'package:applab/screens/patientpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -24,7 +22,7 @@ class HomePage extends StatelessWidget {
       //HomePage.routeDisplayName
       appBar: AppBar(
         title: Text(HomePage.routeDisplayName),
-        actions: [IconButton(onPressed: ()=> _logout(context, Provider.of<ModifyPatient>(context, listen: false),Provider.of<Archivie>(context,listen: false)), icon: Icon(Icons.logout))
+        actions: [IconButton(onPressed: ()=> _logout(context), icon: Icon(Icons.logout))
 
         ],
       ),
@@ -78,15 +76,10 @@ void _toPatientHome(BuildContext context,   modpat, int patientIndex, int ageInd
     Navigator.push(context, MaterialPageRoute(builder: (context) => PatientHome(modpat: modpat, patientIndex: patientIndex, ageIndex: ageIndex)));
   } //_toPatientHome
 
-void _logout(BuildContext context, ModifyPatient modifyPatient, Archivie archivie)async{
+void _logout(BuildContext context)async{
 
-    List memorylist= modifyPatient.newPatient;
-    List lista3=memorylist;
     final prefs= await SharedPreferences.getInstance();
     final doctorsurname= prefs.getString('USERNAMELOGGED');
-    PatientArchieve listtosave= PatientArchieve(doctorsurname: doctorsurname, lista: lista3);
-    archivie.addPatient(listtosave);
-    modifyPatient.newPatient=[];
     await prefs.remove('USERNAMELOGGED');
     Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => LoginPage()));
 

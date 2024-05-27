@@ -1,7 +1,6 @@
-import 'package:applab/models/archivie.dart';
 import 'package:applab/models/doctor.dart';
-import 'package:applab/models/listDoctor.dart';
 import 'package:applab/models/modifypatient.dart';
+import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/signin_doctor.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
@@ -9,7 +8,10 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:applab/screens/homepage.dart';
 import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
-import 'package:applab/models/patientArchieve.dart';
+import 'package:applab/models/doctordatabase.dart';
+import 'package:hive/hive.dart';
+import 'package:applab/models/patient.dart';
+import 'package:applab/models/modifypatient.dart';
 
 
 class LoginPage extends StatefulWidget {
@@ -23,7 +25,23 @@ class _LoginPageState extends State<LoginPage>{
 
   TextEditingController userController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
-  
+  final Box<Doctordatabase> databaseBox= Hive.box<Doctordatabase>('doctors');
+  final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
+
+  List _getUsers(){
+   // List<dynamic>? listdoc= databaseBox.get('listadottori')?.cast<dynamic>();
+  Iterable<Doctordatabase> dottiriii= databaseBox.values;
+  List listadoctors= dottiriii.toList();
+  return listadoctors;
+  }
+
+  List _getPatients(){
+    Iterable<Patientdatabase>pazientiii = patientdatabase1.values;
+    List listapatients= pazientiii.toList();
+    return listapatients;
+  }
+
+
   
 
   @override
@@ -114,41 +132,44 @@ class _LoginPageState extends State<LoginPage>{
               decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
               child: ElevatedButton( 
                 onPressed: () async{
-                  ListDoctor listaaa= Provider.of<ListDoctor>(context,listen: false);
-                  int ind= listaaa.doctors.length;
+                  List<dynamic> listanow= _getUsers();
+                 int ind = listanow.length;
                   for (var i = 0; i< ind; i++ ){
-                    Doctor element = listaaa.doctors[i];
-                    if (i==0){
+                    //Doctor element = listaaa.doctors[i];
+                    Doctordatabase element= listanow[i]; //controllo ogni elemento del database dottori
+                    if (ind==0){
                       ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
                     }
-                    if (userController.text == element.email && passwordController.text== element.password){
+                    if (userController.text == element.email && passwordController.text== element.password){ //controllo che sia già presente nel database
                       print("ciao");
                       final sharedPreferences = await SharedPreferences.getInstance();
                       await sharedPreferences.setString('USERNAMELOGGED', element.surname);
-                      //await sharedPreferences.setBool('DOCTORASSOCIATED', false);
-                      int lunghezza = (Provider.of<Archivie>(context, listen: false)).docpatlista.length; //liste delle varie liste pazienti associati a dottori
-                      List listanuova= Provider.of<Archivie>(context, listen: false).docpatlista; ////liste delle varie liste pazienti associati a dottori
 
-                      for (var i=0; i<lunghezza; i++ ){
-                        PatientArchieve listapazienti= (listanuova[i]); //listapazienti associata a un dottore
-                        String? surnamelist= listapazienti.doctorsurname; //cognome dottore nella lista archiviata
-                        if (surnamelist == element.surname ){ //se il cognome è già presente nella lista vuol dire che era già loggato: potrebbe avere dei pazienti
-                          (Provider.of<ModifyPatient>(context, listen: false)).newPatient= listapazienti.lista; //la lista dei pazienti doventa quella che era in memoria
+                      List<dynamic> pazientinow=_getPatients();
+                      int numeropat=pazientinow.length;
+                      List<dynamic> listaprovvisoria=[];
+                      for (var k=0; k<numeropat; k++){
+                        Patientdatabase paziente= pazientinow[k];
+                        if(paziente.doctorname == element.surname){//il dottore ha già un databse
+                          Patients pazientegiaiscritto = Patients(patients: paziente.patients, age: paziente.age, weight: paziente.weight, height: paziente.height);
+                          listaprovvisoria.add(pazientegiaiscritto);
                         }
                       }
+                      (Provider.of<ModifyPatient>(context, listen: false)).newPatient=listaprovvisoria;
                       Navigator.pushReplacement(
                         context, MaterialPageRoute(builder: (_) => HomePage()));
                     }
-                    else{
-                      ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
-                    }
-                    
-
+                   // else{
+                     // ScaffoldMessenger.of(context)
+                    //..removeCurrentSnackBar()
+                    //..showSnackBar(SnackBar(content: Text('Wrong email/password')));
+                    //}
                   }
+               //   ScaffoldMessenger.of(context)
+                 //   ..removeCurrentSnackBar();
+                 //   ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
                 
                 },
                 child: Text(
@@ -167,13 +188,13 @@ class _LoginPageState extends State<LoginPage>{
       ),
         floatingActionButton: FloatingActionButton(
           child: Icon(MdiIcons.plus),
-          onPressed: ()=> _toSignPage(context, Provider.of<ListDoctor>(context,listen: false)),
+          onPressed: ()=> _toSignPage(context) //, Provider.of<ListDoctor>(context,listen: false)//),
           ),
 
     );
   }//build
-  void _toSignPage(BuildContext context, ListDoctor listDoctor){
-    Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDoctor(listDoctor: listDoctor,)));
+  void _toSignPage(BuildContext context){
+    Navigator.push(context, MaterialPageRoute(builder: (context) => SignInDoctor()));
   }
 
 }

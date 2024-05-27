@@ -1,8 +1,14 @@
 import 'package:applab/models/modifypatient.dart';
+import 'package:applab/models/patientdatabase.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/models/patient.dart';
 import 'package:applab/utils/format.dart';
+import 'package:hive/hive.dart';
+import 'package:applab/models/patientdatabase.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 class PatientPage extends StatefulWidget {
     final int patientIndex;
@@ -122,18 +128,47 @@ class _PatientPage extends State<PatientPage> {
   
 
   //Utility method that validate the form and, if it is valid, save the new patient information.
-  void _validateAndSave(BuildContext context) {
+  void _validateAndSave(BuildContext context)async {
     if(formKey.currentState!.validate()){
+      final sharedPreferences = await SharedPreferences.getInstance();
+      String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
       Patients newPatient = Patients(patients: _choControllername.text, age:_choControllerage.text, weight:_choControllerweight.text, height:_choControllerweight.text);
-      widget.patientIndex == -1 ? widget.modpat.addPatient(newPatient) : widget.modpat.editPatient(widget.patientIndex, newPatient);
+      var newPat= Patientdatabase(_choControllername.text,_choControllerage.text, _choControllerweight.text, _choControllerheight.text, elemntname!);
+      if (widget.patientIndex == -1) {
+        widget.modpat.addPatient(newPatient);
+        var box= await Hive.openBox<Patientdatabase>('patients');
+        box.add(newPat);
+        } 
+      else{
+        Patients provoiuspat= (Provider.of<ModifyPatient>(context, listen: false)).newPatient[widget.patientIndex];
+        String oldname= provoiuspat.patients;
+        String oldage= provoiuspat.age;
+        String oldheight = provoiuspat.height;
+        String oldweight=provoiuspat.weight;
+        widget.modpat.editPatient(widget.patientIndex, newPatient);
+        var oldpat=Patientdatabase(oldname, oldage, oldweight, oldweight, elemntname!);
+        var box= await Hive.openBox<Patientdatabase>('patients');
+        box.delete(oldpat);
+        box.add(newPat);
+      } 
       Navigator.pop(context);
     }
   } // _validateAndSave
 
   //Utility method that deletes
-  void _deleteAndPop(BuildContext context){
+  void _deleteAndPop(BuildContext context) async{
     widget.modpat.removePatient(widget.patientIndex);
-    Navigator.pop(context);
+    Patients provoiuspat= (Provider.of<ModifyPatient>(context, listen: false)).newPatient[widget.patientIndex];
+      String oldname= provoiuspat.patients;
+      String oldage= provoiuspat.age;
+      String oldheight = provoiuspat.height;
+      String oldweight=provoiuspat.weight;
+      final sharedPreferences = await SharedPreferences.getInstance();
+      String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
+      var oldpat=Patientdatabase(oldname, oldage, oldweight, oldweight, elemntname!);
+      var box= await Hive.openBox<Patientdatabase>('patients');
+      box.delete(oldpat);
+      Navigator.pop(context);
   }//_deleteAndPop
 
 } //Patien

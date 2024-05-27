@@ -1,15 +1,16 @@
+import 'package:applab/models/doctordatabase.dart';
 import 'package:flutter/material.dart';
 import 'package:applab/models/doctor.dart';
-import 'package:applab/models/listDoctor.dart';
-
+import 'package:applab/models/doctordatabase.dart';
+import 'package:hive/hive.dart';
 
 
 class SignInDoctor extends StatefulWidget{
-  final ListDoctor listDoctor;
-  SignInDoctor({Key? key, required this.listDoctor}):super(key:key);
+  //final ListDoctor listDoctor;
+  SignInDoctor({Key? key}):super(key:key);
   @override
   State<SignInDoctor> createState() => _SignInDoctorState();
-
+  //final Box<Doctordatabase> databaseBox= Hive.box<Doctordatabase>('myBox');
 }
 
 class _SignInDoctorState extends State<SignInDoctor>{
@@ -169,12 +170,15 @@ class _SignInDoctorState extends State<SignInDoctor>{
       );
      }//build
 
-    void _validateAndSave(BuildContext context){
+    void _validateAndSave(BuildContext context)async{
    //   if (formKey.currentState!.validate()){
-        Doctor newDoctor = Doctor(surname: _nameDoctor.text, email: _emailDoctor.text, password: _passwordDoctor.text );
+       // Doctor newDoctor = Doctor(surname: _nameDoctor.text, email: _emailDoctor.text, password: _passwordDoctor.text );
         //widget.listDoctor.addDoctor(newDoctor);
        // widget.listDoctor.addDoctor(newDoctor);
-       widget.listDoctor.addDoctor(newDoctor);
+       var newDoctor = Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
+       var box= await Hive.openBox<Doctordatabase>('doctors');
+       box.add(newDoctor);
+       //widget.listDoctor.addDoctor(newDoctor);
         Navigator.pop(context);
         
     //  }
