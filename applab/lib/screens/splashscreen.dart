@@ -17,7 +17,7 @@ class SplashScreen extends StatelessWidget{
   } //_checkLogin
 
   @override
-  Widget build(BuildContext context) {    
+ /* Widget build(BuildContext context) {    
     Future.delayed(const Duration(seconds: 3), () => _checkLogin(context)); 
     return Scaffold(
       body: Container(
@@ -43,5 +43,14 @@ class SplashScreen extends StatelessWidget{
         ],)
       )
     );
-}
-}
+}// build
+*/
+
+Widget build(BuildContext context) {    
+    Future.delayed(const Duration(seconds: 3), () => _checkLogin(context)); 
+    return Scaffold(
+      body: Center(child: Image.asset('assets/logo1.png',width: double.infinity, height: double.infinity, fit: BoxFit.cover,),)
+    );
+    }//build
+    
+}//splashscreen
