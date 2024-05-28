@@ -20,6 +20,8 @@ class PatientPage extends StatefulWidget {
   PatientPage({Key? key, required this.modpat, required this.patientIndex,required this.ageIndex}) : super(key: key);
 
   static const routeDisplayName = 'Patient Page';
+
+ 
   
   @override
  State<PatientPage> createState() => _PatientPage();
@@ -36,13 +38,25 @@ class _PatientPage extends State<PatientPage> {
   TextEditingController _choControllerweight = TextEditingController();
   TextEditingController _choControllerheight = TextEditingController();
   TextEditingController _choControllersex = TextEditingController();
-  
+  final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
+
+
+   int? findIndex(Patientdatabase patientofind){
+    for (int i=0; i< patientdatabase1!.length; i++ ){
+      if ((patientdatabase1.getAt(i))?.age==patientofind.age && (patientdatabase1.getAt(i))?.patients == patientofind.patients && (patientdatabase1.getAt(i)?.weight) ==patientofind.weight && (patientdatabase1.getAt(i)?.height) == patientofind.height && (patientdatabase1.getAt(i)?.doctorname == patientofind.doctorname)){
+        return i;
+      }
+    }
+    return null;
+  }
+
+
   @override
   void initState() {
     _choControllername.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
-    _choControllerage.text = widget.ageIndex == -1 ? '' : widget.modpat.newPatient[widget.ageIndex].patients.toString();
-    _choControllerweight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
-    _choControllerheight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
+    _choControllerage.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].age.toString();
+    _choControllerweight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].weight.toString();
+    _choControllerheight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].height.toString();
     _choControllersex.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
     
     super.initState();
@@ -133,7 +147,7 @@ class _PatientPage extends State<PatientPage> {
     if(formKey.currentState!.validate()){
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
-      Patients newPatient = Patients(patients: _choControllername.text, age:_choControllerage.text, weight:_choControllerweight.text, height:_choControllerweight.text);
+      Patients newPatient = Patients(patients: _choControllername.text, age:_choControllerage.text, weight:_choControllerweight.text, height:_choControllerheight.text);
       var newPat= Patientdatabase(_choControllername.text,_choControllerage.text, _choControllerweight.text, _choControllerheight.text, elemntname!);
       if (widget.patientIndex == -1) {
         widget.modpat.addPatient(newPatient);
@@ -146,13 +160,15 @@ class _PatientPage extends State<PatientPage> {
         String oldage= provoiuspat.age;
         String oldheight = provoiuspat.height;
         String oldweight=provoiuspat.weight;
+        //Bool sex= provoiuspat.sex;
+        print(oldname);
         widget.modpat.editPatient(widget.patientIndex, newPatient);
-        var oldpat=Patientdatabase(oldname, oldage, oldweight, oldweight, elemntname!);
+        print(elemntname);
+        var oldpat=Patientdatabase(oldname, oldage, oldweight, oldheight, elemntname!);
+        int? oldondex= findIndex(oldpat);
         var box= await Hive.openBox<Patientdatabase>('patients');
-        box.delete(oldpat);
-        box.add(newPat);
+        await box.putAt(oldondex!, newPat);
       } 
-      //Navigator.pop(context);
       //Navigator.popUntil(context, ModalRoute.withName('/Home Page'));
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
     }
@@ -160,17 +176,19 @@ class _PatientPage extends State<PatientPage> {
 
   //Utility method that deletes
   void _deleteAndPop(BuildContext context) async{
-    widget.modpat.removePatient(widget.patientIndex);
-    Patients provoiuspat= (Provider.of<ModifyPatient>(context, listen: false)).newPatient[widget.patientIndex];
+   // widget.modpat.removePatient(widget.patientIndex);
+      Patients provoiuspat= (Provider.of<ModifyPatient>(context, listen: false)).newPatient[widget.patientIndex];
       String oldname= provoiuspat.patients;
       String oldage= provoiuspat.age;
       String oldheight = provoiuspat.height;
       String oldweight=provoiuspat.weight;
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
-      var oldpat=Patientdatabase(oldname, oldage, oldweight, oldweight, elemntname!);
+      widget.modpat.removePatient(widget.patientIndex);
+      var oldpat=Patientdatabase(oldname, oldage, oldweight, oldheight, elemntname!);
       var box= await Hive.openBox<Patientdatabase>('patients');
-      box.delete(oldpat);
+      int? oldondex= findIndex(oldpat);
+      box.deleteAt(oldondex!);
       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
        
   }//_deleteAndPop
