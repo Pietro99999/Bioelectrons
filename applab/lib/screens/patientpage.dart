@@ -1,5 +1,6 @@
 import 'package:applab/models/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
+import 'package:applab/screens/homepage.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/models/patient.dart';
@@ -151,7 +152,9 @@ class _PatientPage extends State<PatientPage> {
         box.delete(oldpat);
         box.add(newPat);
       } 
-      Navigator.pop(context);
+      //Navigator.pop(context);
+      //Navigator.popUntil(context, ModalRoute.withName('/Home Page'));
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
     }
   } // _validateAndSave
 
@@ -168,7 +171,8 @@ class _PatientPage extends State<PatientPage> {
       var oldpat=Patientdatabase(oldname, oldage, oldweight, oldweight, elemntname!);
       var box= await Hive.openBox<Patientdatabase>('patients');
       box.delete(oldpat);
-      Navigator.pop(context);
+      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
+       
   }//_deleteAndPop
 
 } //Patien
