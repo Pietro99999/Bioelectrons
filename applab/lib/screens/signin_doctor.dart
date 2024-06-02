@@ -40,14 +40,14 @@ class _SignInDoctorState extends State<SignInDoctor>{
     @override
      Widget build(BuildContext context) {
      return Scaffold(
-      appBar: AppBar( backgroundColor: Color.fromARGB(255, 17, 61, 96).withOpacity(0.8)),
+      appBar: AppBar( backgroundColor:Color.fromRGBO(36, 208, 220, 1)),
       body: SingleChildScrollView(
        
         child: Container(
           width: double.infinity,
           padding: const EdgeInsets.symmetric(horizontal: 40),
           height: MediaQuery.of(context).size.height,
-        color: Color.fromARGB(255, 17, 61, 96).withOpacity(0.8),
+        color:Color.fromRGBO(36, 208, 220, 1),
         child: 
         Column(
           mainAxisAlignment: MainAxisAlignment.start ,

@@ -14,16 +14,20 @@ import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:applab/models/steps.dart';
+import 'package:applab/utils/button.dart';
+import 'package:intl/intl.dart';
 
 
 class PatientHome extends StatelessWidget {
    final int patientIndex;
-   final int ageIndex;
+   final ButtonErrorDemo button;
    final ModifyPatient modpat;
    final String day = '2024-04-28';
-
+   
+   
+   //final DateTime date = new DateTime(now.year);
   //PatientPage constructor
-  PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.ageIndex}) : super(key: key);
+  PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
 
   static const routeDisplayName = 'PatientPage';
  @override
@@ -31,14 +35,34 @@ class PatientHome extends StatelessWidget {
     print('${PatientHome.routeDisplayName} built');
     return Scaffold(
       appBar: AppBar(
-        //title: Text('${modpat.newPatient[patientIndex].patients}'),
-        actions:<Widget>[ ElevatedButton (child: Text('MODIFY'),
-        onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPage(modpat: modpat, patientIndex: patientIndex,ageIndex: ageIndex)));},
+         backgroundColor:   Color.fromARGB(195, 89, 192, 213),
+        centerTitle: true,
+        title: Text('Patient: ${modpat.newPatient[patientIndex].patients}',
+        style: TextStyle(
+                        color:  Colors.white,
+                        fontStyle: FontStyle.italic,
+                        fontSize: 30.0,
+                        fontWeight: FontWeight.bold
+                        ),
+                        
+                        
+        ),
+        actions:<Widget>[ ElevatedButton (style: ButtonStyle(
+                   backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),), 
+                   child: Text('MODIFY',
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                       
+                ),
+                ),
+        onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPage(modpat: modpat, patientIndex: patientIndex,button: button)));},
       )],
 
         ),
       body: Center(
-        child: Column( mainAxisAlignment: MainAxisAlignment.center,
+        child: Column( 
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
           Text('Patient: ${modpat.newPatient[patientIndex].patients} '), 
           Text('Age: ${modpat.newPatient[patientIndex].age} '),
@@ -49,7 +73,14 @@ class PatientHome extends StatelessWidget {
         ),
       ),
       floatingActionButton: FloatingActionButton(
-        child: Text('DATA'),
+        backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
+        child: Text('DATA', 
+        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                       
+                ),
+                ),
         onPressed: () async {
                   final result = await _authorize();
                   print(result);

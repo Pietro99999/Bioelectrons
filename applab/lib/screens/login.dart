@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage>{
                 children: [ 
                     Container(
                       height: 250,
-                      color: const Color.fromARGB(255, 16, 106, 180),
+                      color:  Color.fromRGBO(36, 208, 220, 1),
                     ),
                     Positioned(
                       top: -100,
@@ -66,7 +66,7 @@ class _LoginPageState extends State<LoginPage>{
                         width:200,
                         child: DecoratedBox(decoration: 
                         BoxDecoration(
-                          shape: BoxShape.circle, color: Color.fromARGB(195, 147, 181, 208)
+                          shape: BoxShape.circle, color: Color.fromARGB(195, 131, 229, 248).withOpacity(0.6)
                         )
                         ),
                         )
@@ -80,7 +80,7 @@ class _LoginPageState extends State<LoginPage>{
                           width:200,
                           child: DecoratedBox(decoration: 
                           BoxDecoration(
-                            shape: BoxShape.circle, color: Color.fromARGB(255, 16, 106, 180),
+                             shape: BoxShape.circle, color: Color.fromARGB(195, 131, 229, 248).withOpacity(0.6)
                           )),
                           )
                           ),
@@ -96,7 +96,7 @@ class _LoginPageState extends State<LoginPage>{
             ClipPath(
              clipper: OvalBottomBorderClipper(),
               child: Container(height:50,
-              color: Color.fromARGB(255, 16, 106, 180),
+              color:  Color.fromRGBO(36, 208, 220, 1),
             ),
             ),
             SizedBox(
@@ -172,24 +172,84 @@ class _LoginPageState extends State<LoginPage>{
                  //   ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
                 
                 },
+                style: ButtonStyle(
+                   backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
+                  
+               
+              overlayColor: MaterialStateProperty.resolveWith((states){
+                if(states.contains(MaterialState.pressed)){
+                return Color.fromARGB(255, 140, 183, 218);
+                }
+              },
+              ),
+             ),
+
                 child: Text(
                   'Login',
+                  style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                       
                 ),
+                  
+                ),
+                
               ),
 
 
             ),
 
            SizedBox(
-              height: 130,
+              height: 50,
             ),
+           Text('If you don\'t have an account yet please sign in'),
+           SizedBox(
+              height: 10,
+            ),
+         Container(
+              height: 50,
+              width: 250,
+              decoration: BoxDecoration(borderRadius: BorderRadius.circular(20)),
+             child: ElevatedButton(
+                onPressed: () => _toSignPage(context), //, Provider.of<ListDoctor>(context,listen: false)//),
+                style: ButtonStyle(
+                   backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
+                  
+               
+              overlayColor: MaterialStateProperty.resolveWith((states){
+                if(states.contains(MaterialState.pressed)){
+                return Color.fromARGB(255, 140, 183, 218);
+                }
+              },
+              ),
+             ),
+
+                child: const Text(
+                  'Sign in',
+                  style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 20.0,
+                       
+                ),
+                  
+                ),
+          
+
+              ),
+          ),
+              
+              
           ],
         ),
       ),
+      
+
+      /*
         floatingActionButton: FloatingActionButton(
-          child: Icon(MdiIcons.plus),
+          backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
+          child: Icon(MdiIcons.plus, color: Colors.white,),
           onPressed: ()=> _toSignPage(context) //, Provider.of<ListDoctor>(context,listen: false)//),
-          ),
+          ), */
 
     );
   }//build
