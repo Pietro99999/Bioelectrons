@@ -8,17 +8,17 @@ import 'dart:convert'show jsonDecode;
 import 'dart:io';
 import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
-import 'package:applab/models/steps.dart';
+import 'package:applab/utils/button.dart';
 
 
 class PatientHome extends StatelessWidget {
    final int patientIndex;
    final ButtonErrorDemo button;
    final ModifyPatient modpat;
-   final String day = '2024-04-28';
+   final String day = '2024-04-27';
 
   //PatientPage constructor
-  PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.ageIndex}) : super(key: key);
+  PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
 
   static const routeDisplayName = 'PatientPage';
  @override
@@ -88,7 +88,27 @@ class PatientHome extends StatelessWidget {
                   final valCal = _splitVal(calories);
                   final timeHr = _splitTime(hr);
                   final valHr = _splitVal(hr);
-                  
+                  //data elaboration
+                  List listona = [];
+                  List indici = [];
+                  bool droga = false;
+                  if (sleep?[0]<1000){
+                    for (int i=0; i<timeHr!.length; i++ ){
+                      if (valHr?[i]>130){
+                        droga=true;
+                        indici.add(i);
+                      }//if hr>130
+                      else{
+                        if(droga==true){
+                          listona.add(indici);                          
+                          indici = []; //svuoto la lista indici 
+                          droga=false;
+                        }//if droga==true
+                      }//else hr>130
+                    };//for
+                  }//if sleep
+                  print('listona $listona');
+
                   ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(content: Text(message1))); 
@@ -195,7 +215,7 @@ Future<List?> _requestSleep() async {
     print('${response.statusCode}');
     //if OK parse the response, otherwise return null
     if (response.statusCode == 200) {
-      final decodedResponse = jsonDecode(response.body);    
+      final decodedResponse = jsonDecode(response.body);       
       result.add(decodedResponse['data']['data']['minutesAsleep']);
       result.add(decodedResponse['data']['data']['minutesToFallAsleep']);
       result.add(decodedResponse['data']['data']['efficiency']);
@@ -224,6 +244,7 @@ List? _splitVal(List? lista){
   List? val = [];
   int l =lista!.length;
     for (int i = 1; i < l; i=i+2){
+      //val.add(int.parse(lista[i]) );
       val.add(lista[i]);
     }//for
     print('numero valori: $l');

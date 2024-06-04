@@ -75,14 +75,12 @@ import 'package:graphic/graphic.dart';
       ),
     );
     /*return Scaffold(  
-      body: Center(
-        Column( mainAxisAlignment: MainAxisAlignment.center,
+      body: Center(Column( mainAxisAlignment: MainAxisAlignment.center,
           children: [
           Text('Day = $day'), 
           Text('time: ${timeCal?[0]} calories: ${valCal?[0]+valCal?[154]}'),
           Text('time: ${timeHr?[0]} hr: ${valHr?[1]}'),
           Text('minutesAsleep = ${sleep?[0]} minutesToFallAsleep = ${sleep?[1]} efficiency = ${sleep?[2]}'),   
-          //Padding(padding: const EdgeInsets.all(8.0), child: MyChartPage(),)  
         ],//children
         ),
         
@@ -91,10 +89,6 @@ import 'package:graphic/graphic.dart';
       
   
       );*/
-      /*return SafeArea(child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: MyChartPage()
-              ),);*/
 
       }//build
 }//Class Data
