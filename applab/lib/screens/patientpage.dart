@@ -1,6 +1,7 @@
 import 'package:applab/models/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/homepage.dart';
+import 'package:applab/utils/button.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/models/patient.dart';
@@ -11,13 +12,15 @@ import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
+
 class PatientPage extends StatefulWidget {
     final int patientIndex;
-    final int ageIndex;
+
     final ModifyPatient modpat;
+    final ButtonErrorDemo button;
 
   //PatientPage constructor
-  PatientPage({Key? key, required this.modpat, required this.patientIndex,required this.ageIndex}) : super(key: key);
+  PatientPage({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
 
   static const routeDisplayName = 'Patient Page';
 
@@ -33,11 +36,12 @@ class _PatientPage extends State<PatientPage> {
   final formKey = GlobalKey<FormState>();
 
   //Variables that maintain the current form fields values in memory.
-  TextEditingController _choControllername = TextEditingController();
-  TextEditingController _choControllerage = TextEditingController();
-  TextEditingController _choControllerweight = TextEditingController();
-  TextEditingController _choControllerheight = TextEditingController();
-  TextEditingController _choControllersex = TextEditingController();
+  TextEditingController _controllerName = TextEditingController();
+  TextEditingController _controllerAge = TextEditingController();
+  TextEditingController _controllerWeight = TextEditingController();
+  TextEditingController _controllerHeight = TextEditingController();
+  bool _controllerSex=true;
+
   final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
 
 
@@ -53,11 +57,11 @@ class _PatientPage extends State<PatientPage> {
 
   @override
   void initState() {
-    _choControllername.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
-    _choControllerage.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].age.toString();
-    _choControllerweight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].weight.toString();
-    _choControllerheight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].height.toString();
-    _choControllersex.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
+    _controllerName.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].patients.toString();
+    _controllerAge.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].age.toString();
+    _controllerWeight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].weight.toString();
+    _controllerHeight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].height.toString();
+    _controllerSex= widget.patientIndex == -1 ? true : widget.modpat.newPatient[widget.patientIndex].sex;
     
     super.initState();
   } // initState
@@ -65,11 +69,11 @@ class _PatientPage extends State<PatientPage> {
   //Form controllers need to be manually disposed. So, here we need also to override the dispose() method.
   @override
   void dispose() {
-    _choControllername.dispose();
-    _choControllerage.dispose();
-    _choControllerweight.dispose();
-    _choControllerheight.dispose();
-    _choControllersex.dispose();
+    _controllerName.dispose();
+    _controllerAge.dispose();
+    _controllerWeight.dispose();
+    _controllerHeight.dispose();
+   
     super.dispose();
   } // dispose
 
@@ -83,15 +87,22 @@ class _PatientPage extends State<PatientPage> {
     //A FAB is showed to provide the "delete" functinality. It is showed only if the patient already exists.
     return Scaffold(
       appBar: AppBar(
-        title: Text(PatientPage.routeDisplayName),
+        backgroundColor:  Color.fromARGB(195, 89, 192, 213),
+        centerTitle: true,
+        title: Text(PatientPage.routeDisplayName,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 30.0,
+                       ),)
+                       ,
         actions: [
-          IconButton(onPressed: () => _validateAndSave(context), icon: Icon(Icons.done))
+          IconButton(onPressed: () => _validateAndSave(context), icon: Icon(Icons.done),color:Colors.white)
         ],
       ),
       body: Center(
         child: _buildForm(context),
       ),
-      floatingActionButton: widget.patientIndex == -1 ? null : FloatingActionButton(onPressed: () => _deleteAndPop(context), child: Icon(Icons.delete),),
+      floatingActionButton: widget.patientIndex == -1 ? null : FloatingActionButton(onPressed: () => _deleteAndPop(context), child: Icon(Icons.delete, color:Colors.white),),
     );
   }//build
 
@@ -106,34 +117,79 @@ class _PatientPage extends State<PatientPage> {
             FormSeparator(label: 'Patient'),
            
             FormStringTile(labelText: 'Name and Surname',
-              controller: _choControllername,
+              controller: _controllerName,
               icon: MdiIcons.faceManProfile,
               
             ),
             FormSeparator(label: 'Age'),
              FormNumberTileAge(
               labelText: 'Age',
-              controller: _choControllerage,
+              controller: _controllerAge,
               icon: MdiIcons.cake,
             ),
             FormSeparator(label: 'Weight'),
             FormNumberTileWeight(
               labelText: 'Weight (kg)',
-              controller: _choControllerweight,
+              controller: _controllerWeight,
               icon: MdiIcons.scale,
             ),
             FormSeparator(label: 'Height'),
             FormNumberTileHeight(
               labelText: 'Height (cm)',
-              controller: _choControllerheight,
+              controller: _controllerHeight,
               icon: MdiIcons.ruler,
             ),
             FormSeparator(label: 'Sex'),
-            FormSexTile(
-              labelText: 'Sex',
-              controller: _choControllersex,
-              icon: MdiIcons.genderFemale,
-            ),
+            Row(
+              
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: [ 
+              ElevatedButton.icon(
+             onPressed:  widget.button.handleButtonPressM,
+             icon:  Icon(MdiIcons.genderMale,color: Colors.white),
+             label:const Text('Male' ,
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold
+                ),
+                ),
+             style: ButtonStyle(
+               backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
+              overlayColor: MaterialStateProperty.resolveWith((states){
+                if(states.contains(MaterialState.pressed)){
+                return Color.fromARGB(255, 140, 183, 218);
+                }
+              },
+              ),
+             )
+
+           ),
+           
+           ElevatedButton.icon(
+             onPressed: widget.button.handleButtonPressF,
+             icon:  Icon(MdiIcons.genderFemale, color: Colors.white),
+             label:const Text('Female' ,
+                        style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 15.0,
+                        fontWeight: FontWeight.bold
+                ),
+                ),
+             style: ButtonStyle(
+               backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
+              overlayColor: MaterialStateProperty.resolveWith((states){
+                if(states.contains(MaterialState.pressed)){
+                return Color.fromARGB(255, 222, 149, 222);
+                }
+              },
+              ),
+             )
+
+           ),
+        
+        ],  
+         ),
           ],
         ),
       ),
@@ -144,11 +200,16 @@ class _PatientPage extends State<PatientPage> {
 
   //Utility method that validate the form and, if it is valid, save the new patient information.
   void _validateAndSave(BuildContext context)async {
+    if(widget.button.bottonState()!=true){ 
+       ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('you must insert an option')),);
+   
+        }
     if(formKey.currentState!.validate()){
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
-      Patients newPatient = Patients(patients: _choControllername.text, age:_choControllerage.text, weight:_choControllerweight.text, height:_choControllerheight.text);
-      var newPat= Patientdatabase(_choControllername.text,_choControllerage.text, _choControllerweight.text, _choControllerheight.text, elemntname!);
+      Patients newPatient = Patients(patients: _controllerName.text, age:_controllerAge.text, weight:_controllerWeight.text, height:_controllerHeight.text);
+      var newPat= Patientdatabase(_controllerName.text,_controllerAge.text, _controllerWeight.text, _controllerHeight.text, elemntname!);
       if (widget.patientIndex == -1) {
         widget.modpat.addPatient(newPatient);
         var box= await Hive.openBox<Patientdatabase>('patients');
