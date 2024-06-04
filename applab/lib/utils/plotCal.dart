@@ -1,33 +1,30 @@
+/*import 'package:flutter/material.dart';
+import 'package:fl_chart/fl_chart.dart';
+import 'package:applab/screens/data.dart';
+
+class PlotCal extends StatelessWidget{
+
+}*/
+
 import 'package:flutter/material.dart';
-import 'package:applab/utils/plotCal.dart';
 import 'package:graphic/graphic.dart';
 
- class Data extends StatelessWidget{
- 
-  final List? timeCal;  // list of strings  
-  final List? sleep;  // [0]minutesAsleep [1]minutesToFallAsleep [2]efficiency   integers
-  final List? valCal; // list of int strings
-  final List? timeHr; // list of strings
-  final List? valHr;  // list of int values
-  final String? day; 
-    
-  Data({required this.day, required this.timeCal, required this.valCal, required this.timeHr, required this.valHr, required this.sleep});
-  
-
-  Widget build(BuildContext context) {   
-    //final categories = ['A', 'B', 'C', 'D','E'];
-    //final values = [30, 80, 45, 60, 50];
+class MyChartPage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    final categories = ['A', 'B', 'C', 'D','E'];
+    final values = [30, 80, 45, 60, 50];
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Graphic HR'),
+        title: Text('Graphic Chart Example'),
       ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Chart(
-          data: List.generate(10000, (index) => {
-            'category': timeHr?[index],
-            'value': valHr?[index],
+          data: List.generate(categories.length, (index) => {
+            'category': categories[index],
+            'value': values[index],
           }),
           variables: {
             'category': Variable(
@@ -48,7 +45,9 @@ import 'package:graphic/graphic.dart';
           position: Varset('category') * Varset('value'),
           shape: ShapeEncode(value: BasicLineShape(smooth: true)),
           size: SizeEncode(value: 2),
-          //color:,
+          /*color: ColorEncode(
+              values: [const Color(0xFF326F5E), const Color(0xFF89453C)],
+              variable: 'type'),*/
         ),
         /*AreaMark(
             gradient: GradientEncode(
@@ -74,29 +73,10 @@ import 'package:graphic/graphic.dart';
         ),
       ),
     );
-    /*return Scaffold(  
-      body: Center(
-        Column( mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          Text('Day = $day'), 
-          Text('time: ${timeCal?[0]} calories: ${valCal?[0]+valCal?[154]}'),
-          Text('time: ${timeHr?[0]} hr: ${valHr?[1]}'),
-          Text('minutesAsleep = ${sleep?[0]} minutesToFallAsleep = ${sleep?[1]} efficiency = ${sleep?[2]}'),   
-          //Padding(padding: const EdgeInsets.all(8.0), child: MyChartPage(),)  
-        ],//children
-        ),
-        
-        
-      ),
-      
-  
-      );*/
-      /*return SafeArea(child: AspectRatio(
-                aspectRatio: 16 / 9,
-                child: MyChartPage()
-              ),);*/
+  }
+}
 
-      }//build
-}//Class Data
+void main() => runApp(MaterialApp(
+  home: MyChartPage(),
+));
 
- 
