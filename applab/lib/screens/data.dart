@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:applab/utils/plotCal.dart';
+import 'package:flutter/widgets.dart';
 import 'package:graphic/graphic.dart';
 
  class Data extends StatelessWidget{
@@ -10,28 +11,26 @@ import 'package:graphic/graphic.dart';
   final List? timeHr; // list of strings
   final List? valHr;  // list of int values
   final String? day; 
+  final List listona;
     
-  Data({required this.day, required this.timeCal, required this.valCal, required this.timeHr, required this.valHr, required this.sleep});
+  Data({required this.day, required this.timeCal, required this.valCal, required this.timeHr, required this.valHr, required this.sleep, required this.listona});
   
 
-  Widget build(BuildContext context) {   
-    //final categories = ['A', 'B', 'C', 'D','E'];
-    //final values = [30, 80, 45, 60, 50];
-
+  Widget build(BuildContext context) { 
     return Scaffold(
       appBar: AppBar(
         title: Text('Graphic HR'),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.only(),
         child: Chart(
-          data: List.generate(10000, (index) => {
-            'category': timeHr?[index],
+          data: List.generate(timeHr!.length, (index) => {
+            'time': timeHr?[index],
             'value': valHr?[index],
           }),
           variables: {
-            'category': Variable(
-              accessor: (Map map) => map['category'] as String,
+            'time': Variable(
+              accessor: (Map map) => map['time'] as String,
             ),
             'value': Variable(
               accessor: (Map map) => map['value'] as num,
@@ -45,7 +44,7 @@ import 'package:graphic/graphic.dart';
           ],*/
           marks: <Mark<Shape>>[
         LineMark(
-          position: Varset('category') * Varset('value'),
+          position: Varset('time') * Varset('value'),
           shape: ShapeEncode(value: BasicLineShape(smooth: true)),
           size: SizeEncode(value: 2),
           //color:,
