@@ -40,7 +40,7 @@ class _PatientPage extends State<PatientPage> {
   TextEditingController _controllerAge = TextEditingController();
   TextEditingController _controllerWeight = TextEditingController();
   TextEditingController _controllerHeight = TextEditingController();
-  bool _controllerSex=true;
+  bool? _controllerSex;
 
   final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
 
@@ -87,7 +87,7 @@ class _PatientPage extends State<PatientPage> {
     //A FAB is showed to provide the "delete" functinality. It is showed only if the patient already exists.
     return Scaffold(
       appBar: AppBar(
-        backgroundColor:  Color.fromARGB(195, 89, 192, 213),
+        backgroundColor:   Color.fromRGBO(36, 208, 220, 1),
         centerTitle: true,
         title: Text(PatientPage.routeDisplayName,
                     style: TextStyle(
@@ -96,13 +96,25 @@ class _PatientPage extends State<PatientPage> {
                        ),)
                        ,
         actions: [
-          IconButton(onPressed: () => _validateAndSave(context), icon: Icon(Icons.done),color:Colors.white)
+          IconButton(onPressed: () => _validateAndSave(context), icon: Icon(Icons.done, color: Color.fromARGB(255, 255, 255, 255),),)
         ],
       ),
-      body: Center(
+      body: Stack(
+        children: [ 
+                    Container(
+                      
+                      color:  Color.fromRGBO(36, 208, 220, 1),
+                    ), 
+                
+      Center(
         child: _buildForm(context),
       ),
-      floatingActionButton: widget.patientIndex == -1 ? null : FloatingActionButton(onPressed: () => _deleteAndPop(context), child: Icon(Icons.delete, color:Colors.white),),
+        ],
+        ),
+      floatingActionButton: widget.patientIndex == -1 ? null : FloatingActionButton(highlightElevation:100, backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6), onPressed: () => _deleteAndPop(context), child: Icon(Icons.delete, color:Color.fromARGB(255, 255, 255, 255),),),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+        
+      
     );
   }//build
 
@@ -111,35 +123,47 @@ class _PatientPage extends State<PatientPage> {
     return Form(
       key: formKey,
       child: Padding(
+        
         padding: const EdgeInsets.only(top: 10, bottom: 8, left: 20, right: 20),
         child: ListView(
+          
           children: <Widget>[
-            FormSeparator(label: 'Patient'),
-           
+            SizedBox(
+              height:60,
+            ),
             FormStringTile(labelText: 'Name and Surname',
               controller: _controllerName,
               icon: MdiIcons.faceManProfile,
               
             ),
-            FormSeparator(label: 'Age'),
+            SizedBox(
+              height:30,
+            ),
              FormNumberTileAge(
               labelText: 'Age',
               controller: _controllerAge,
               icon: MdiIcons.cake,
             ),
-            FormSeparator(label: 'Weight'),
+            SizedBox(
+              height:30,
+            ),
             FormNumberTileWeight(
               labelText: 'Weight (kg)',
               controller: _controllerWeight,
               icon: MdiIcons.scale,
             ),
-            FormSeparator(label: 'Height'),
+            SizedBox(
+              height:30,
+            ),
             FormNumberTileHeight(
               labelText: 'Height (cm)',
               controller: _controllerHeight,
               icon: MdiIcons.ruler,
             ),
-            FormSeparator(label: 'Sex'),
+            SizedBox(
+              height:30,
+            ),
+         
             Row(
               
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
@@ -155,7 +179,7 @@ class _PatientPage extends State<PatientPage> {
                 ),
                 ),
              style: ButtonStyle(
-               backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
+               backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 19, 121, 141).withOpacity(0.6),),
               overlayColor: MaterialStateProperty.resolveWith((states){
                 if(states.contains(MaterialState.pressed)){
                 return Color.fromARGB(255, 140, 183, 218);
@@ -177,7 +201,7 @@ class _PatientPage extends State<PatientPage> {
                 ),
                 ),
              style: ButtonStyle(
-               backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
+               backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 19, 121, 141).withOpacity(0.6),),
               overlayColor: MaterialStateProperty.resolveWith((states){
                 if(states.contains(MaterialState.pressed)){
                 return Color.fromARGB(255, 222, 149, 222);
@@ -200,15 +224,18 @@ class _PatientPage extends State<PatientPage> {
 
   //Utility method that validate the form and, if it is valid, save the new patient information.
   void _validateAndSave(BuildContext context)async {
-    if(widget.button.bottonState()!=true){ 
+     if(widget.button.bottonState()!=true){ 
        ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('you must insert an option')),);
-   
-        }
-    if(formKey.currentState!.validate()){
+        SnackBar(content: Text('You must push a botton')),);
+       }
+    if (widget.button.bottonStateM()==true ){
+         _controllerSex=false;
+    }
+
+   if(formKey.currentState!.validate() && widget.button.bottonState()==true){
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
-      Patients newPatient = Patients(patients: _controllerName.text, age:_controllerAge.text, weight:_controllerWeight.text, height:_controllerHeight.text);
+      Patients newPatient = Patients(patients: _controllerName.text, age:_controllerAge.text, weight:_controllerWeight.text, height:_controllerHeight.text,sex:_controllerSex);
       var newPat= Patientdatabase(_controllerName.text,_controllerAge.text, _controllerWeight.text, _controllerHeight.text, elemntname!);
       if (widget.patientIndex == -1) {
         widget.modpat.addPatient(newPatient);
@@ -231,7 +258,7 @@ class _PatientPage extends State<PatientPage> {
         await box.putAt(oldondex!, newPat);
       } 
       //Navigator.popUntil(context, ModalRoute.withName('/Home Page'));
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
+      Navigator.pop(context);
     }
   } // _validateAndSave
 
@@ -250,8 +277,8 @@ class _PatientPage extends State<PatientPage> {
       var box= await Hive.openBox<Patientdatabase>('patients');
       int? oldondex= findIndex(oldpat);
       box.deleteAt(oldondex!);
-      Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
+      Navigator.pop(context);
        
   }//_deleteAndPop
 
-} //Patien
+} //Patient

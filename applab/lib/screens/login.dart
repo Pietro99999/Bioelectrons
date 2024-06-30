@@ -27,10 +27,11 @@ class _LoginPageState extends State<LoginPage>{
   TextEditingController passwordController = TextEditingController();
   final Box<Doctordatabase> databaseBox= Hive.box<Doctordatabase>('doctors');
   final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
-
+ 
   List _getUsers(){
    // List<dynamic>? listdoc= databaseBox.get('listadottori')?.cast<dynamic>();
   Iterable<Doctordatabase> dottiriii= databaseBox.values;
+  print(databaseBox.values);
   List listadoctors= dottiriii.toList();
   return listadoctors;
   }
@@ -136,12 +137,15 @@ class _LoginPageState extends State<LoginPage>{
                  int ind = listanow.length;
                   for (var i = 0; i< ind; i++ ){
                     //Doctor element = listaaa.doctors[i];
+                    
                     Doctordatabase element= listanow[i]; //controllo ogni elemento del database dottori
+                    print(listanow[i] );
                     if (ind==0){
                       ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
                     }
+
                     if (userController.text == element.email && passwordController.text== element.password){ //controllo che sia già presente nel database
                       print("ciao");
                       final sharedPreferences = await SharedPreferences.getInstance();
@@ -153,7 +157,7 @@ class _LoginPageState extends State<LoginPage>{
                       for (var k=0; k<numeropat; k++){
                         Patientdatabase paziente= pazientinow[k];
                         if(paziente.doctorname == element.surname){//il dottore ha già un databse
-                          Patients pazientegiaiscritto = Patients(patients: paziente.patients, age: paziente.age, weight: paziente.weight, height: paziente.height);
+                          Patients pazientegiaiscritto = Patients(patients: paziente.patients, age: paziente.age, weight: paziente.weight, height: paziente.height,sex:paziente.sex);
                           listaprovvisoria.add(pazientegiaiscritto);
                         }
                       }
@@ -161,11 +165,11 @@ class _LoginPageState extends State<LoginPage>{
                       Navigator.pushReplacement(
                         context, MaterialPageRoute(builder: (_) => HomePage()));
                     }
-                   // else{
-                     // ScaffoldMessenger.of(context)
-                    //..removeCurrentSnackBar()
-                    //..showSnackBar(SnackBar(content: Text('Wrong email/password')));
-                    //}
+                   /* else{
+                      ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
+                    }*/
                   }
                //   ScaffoldMessenger.of(context)
                  //   ..removeCurrentSnackBar();
@@ -202,7 +206,7 @@ class _LoginPageState extends State<LoginPage>{
            SizedBox(
               height: 50,
             ),
-           Text('If you don\'t have an account yet please sign in'),
+           Text('If you don\'t have an account yet please sign up'),
            SizedBox(
               height: 10,
             ),
@@ -225,7 +229,7 @@ class _LoginPageState extends State<LoginPage>{
              ),
 
                 child: const Text(
-                  'Sign in',
+                  'Sign up',
                   style: TextStyle(
                         color: Colors.white,
                         fontSize: 20.0,

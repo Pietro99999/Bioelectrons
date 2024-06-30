@@ -4,10 +4,10 @@ class Patients{
   String age;
   String weight;
   String height;
-  bool sex=true;
+  bool? sex;
 
 
   //Constructor
-  Patients({required this.patients, required this.age, required this.weight, required this.height});
+  Patients({required this.patients, required this.age, required this.weight, required this.height,required this.sex});
 
 } //patients

@@ -79,4 +79,3 @@ class MyChartPage extends StatelessWidget {
 void main() => runApp(MaterialApp(
   home: MyChartPage(),
 ));
-

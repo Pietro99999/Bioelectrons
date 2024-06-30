@@ -17,7 +17,7 @@ class PatientHome extends StatelessWidget {
    final int patientIndex;
    final ButtonErrorDemo button;
    final ModifyPatient modpat;
-   final String day = '2023-05-30'; 
+   final String day = '2023-05-31'; 
 //GIORNI INTERESSANTI:
 //2024-04-23 i dati sleep richiedono [0] e dorme poco perchè va a letto a mezzanotte (348 minuti)
 //2024/04/26 due eventi ma uno breve    BELLO COME SEMPIO
@@ -58,17 +58,91 @@ class PatientHome extends StatelessWidget {
         onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPage(modpat: modpat, patientIndex: patientIndex,button: button)));},
       )],
         ),
-      body: Center(
-        child: Column( 
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          Text('Patient: ${modpat.newPatient[patientIndex].patients} '), 
-          Text('Age: ${modpat.newPatient[patientIndex].age} '),
-          Text('Height: ${modpat.newPatient[patientIndex].height} '),
-          Text('Weight: ${modpat.newPatient[patientIndex].weight} '),          
-        ],
-        ),
+      body: ListView(
+        padding: EdgeInsets.zero,
+        children:<Widget>[
+           Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              Container(
+                color:  modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 131, 229, 248).withOpacity(0.6):Color.fromARGB(240, 250, 185, 241).withOpacity(0.6),
+                height: 180,
+                width: double.infinity,
+              ),
+              Positioned(
+                top: 180 - 160 / 2,
+                child: CircleAvatar(
+                  radius: 160 / 2,
+                  backgroundColor:
+                      Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
+                  backgroundImage: AssetImage(
+                      modpat.newPatient[patientIndex].sex == false
+                          ? 'assets/m.png'
+                          : 'assets/w.png'),
+                ),
+              ),
+            ]
+            ),
+     Container(
+      padding: EdgeInsets.symmetric(horizontal: 50, vertical: 50),
+      child: Column(
+      children: [
+                  const SizedBox(height:40),
+                  Text('${modpat.newPatient[patientIndex].patients}',  style: TextStyle(fontSize: 22,color: modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 13, 194, 231).withOpacity(0.6):Color.fromARGB(239, 208, 17, 183).withOpacity(0.6), fontWeight: FontWeight.bold ),), 
+                  
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Age: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].age}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+            
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Height: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].height}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+                  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Weight: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].weight} ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+                
+                 RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Sex: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].sex == false ? 'Male' : 'Female'}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+                
+                ],
+      
       ),
+     ),
+
+        ],
+      ),
+
+
       floatingActionButton: FloatingActionButton(
         backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
         child: Text('DATA', 
@@ -171,7 +245,7 @@ class PatientHome extends StatelessWidget {
                   listona = _addAfter(listona);
                   //print('listona add = $listona');
                  
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep/*, listona: listona*/)));
+                    Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep, listona: listona)));
                   }//se abbiamo tutti i dati
                   else{
                      String messaggio = 'For the selected day there is not enough data available to provide an accurate answer';

@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/screens/homepage.dart';
+import 'package:fancy_password_field/fancy_password_field.dart';
 
 
+//nfinal GlobalKey<FlutterPwValidatorState> validatorKey = GlobalKey<FlutterPwValidatorState>();
 ///Class that implements a custom [StatelessWidget] that acts as a separator in a [Form].
 ///It can be used to separate "categories" in a [Form].
 class FormSeparator extends StatelessWidget {
@@ -124,9 +126,15 @@ class FormNumberTileAge extends ListTile {
               
               },
               
-              keyboardType: TextInputType.numberWithOptions(signed: true),
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
                 labelText: labelText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
               ),
             ),
           ),
@@ -171,9 +179,16 @@ class FormNumberTileWeight extends ListTile {
               
               },
               
-              keyboardType: TextInputType.numberWithOptions(signed: true),
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
                 labelText: labelText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
+                    
               ),
             ),
           ),
@@ -218,9 +233,15 @@ class FormNumberTileHeight extends ListTile {
               
               },
               
-              keyboardType: TextInputType.numberWithOptions(signed: true),
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
                 labelText: labelText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
               ),
             ),
           ),
@@ -258,10 +279,16 @@ class FormNumberTile extends ListTile {
                   ret = 'Must be a number.';
                 return ret;
               },
-              keyboardType: TextInputType.numberWithOptions(signed: true),
+              keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
                 labelText: labelText,
-              ),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
+                    ),
             ),
           ),
         ],
@@ -303,7 +330,13 @@ class FormStringTile extends ListTile {
               },
               keyboardType: TextInputType.text,
               decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
                 labelText: labelText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
               ),
             ),
           ),
@@ -313,16 +346,15 @@ class FormStringTile extends ListTile {
   } // build
 } // FormStringTile
 
-///Class that implement a custom-made [ListTile] to manage textboxes containing numbers in a [Form].
+//Class that implement a custom-made [ListTile] to manage textboxes containing numbers in a [Form].
 ///You must provide a controller, a label that is shown as helper, and an icon.
-///The [FormSexTile] content is valid if it contains strings only. This is checked via a regex.
-class FormSexTile extends ListTile {
+///The [FormEmailTile] content is valid if it contains strings only. This is checked via a regex.
+class FormEmailTile extends ListTile {
   final controller;
   final labelText;
   final icon;
-  bool pressed=false;
 
-  FormSexTile({this.icon, this.controller, this.labelText});
+  FormEmailTile({this.icon, this.controller, this.labelText});
 
   @override
   Widget build(BuildContext context) {
@@ -331,74 +363,160 @@ class FormSexTile extends ListTile {
       leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
       title: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
-        children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [ 
-              ElevatedButton.icon(
-             onPressed: (){},
-             icon:  Icon(MdiIcons.genderMale),
-             label:const Text('Male' ,
-                        style: TextStyle(
-                        color: Color.fromARGB(255, 9, 21, 126),
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.bold
-                ),
-                ),
-             style: ButtonStyle(
-              overlayColor: MaterialStateProperty.resolveWith((states){
-                if(states.contains(MaterialState.pressed)){
-                return Color.fromARGB(255, 140, 183, 218);
-                }
-              },
-              ),
-             )
-
-           ),
-           
-           ElevatedButton.icon(
-             onPressed: (){},
-             icon:  Icon(MdiIcons.genderFemale),
-             label:const Text('Female' ,
-                        style: TextStyle(
-                        color: Color.fromARGB(255, 99, 9, 126),
-                        fontSize: 15.0,
-                        fontWeight: FontWeight.bold
-                ),
-                ),
-             style: ButtonStyle(
-              overlayColor: MaterialStateProperty.resolveWith((states){
-                if(states.contains(MaterialState.pressed)){
-                return Color.fromARGB(255, 222, 149, 222);
-                }
-              },
-              ),
-             )
-
-           ),
-        ],  
-         ),
-          Container(
-            width: screenSize.width / 1.5,
+        children: <Widget>[     
+            Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
             child: TextFormField(
               controller: controller,
               validator: (value) {
                 String? ret;
-                
-                if(pressed=false)
-                  ret ='Must insert an option.';
+                String pattern =r"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'"
+      r'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-'
+      r'\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*'
+      r'[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:(2(5[0-5]|[0-4]'
+      r'[0-9])|1[0-9][0-9]|[1-9]?[0-9]))\.){3}(?:(2(5[0-5]|[0-4][0-9])|1[0-9]'
+      r'[0-9]|[1-9]?[0-9])|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\'
+      r'x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])'; 
+                RegExp regex = RegExp(pattern, caseSensitive: false, unicode: true, dotAll: true);
+                if(!regex.hasMatch(value!))
+                  ret = 'Enter a valid email address';
                 return ret;
               },
+               keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
+                labelText: labelText,
+                prefixIcon:const Icon(Icons.mail),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
               ),
-              ),
+            ),
+          ),
         ],
       ),
     );
   } // build
-} // FormStringTile
+} // FormEmailTTile
+
+//Class that implement a custom-made [ListTile] to manage textboxes containing numbers in a [Form].
+///You must provide a controller, a label that is shown as helper, and an icon.
+///The [FormDoctTile] content is valid if it contains strings only. This is checked via a regex.
+class FormDoctTile extends ListTile {
+  final controller;
+  final labelText;
+  final icon;
+
+  FormDoctTile({this.icon, this.controller, this.labelText});
+
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    return ListTile(
+      leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[     
+            Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+            child: TextFormField(
+              controller: controller,
+              validator: (value) {
+                String? ret;
+                String pattern =r"^[\p{L} ,.'-]*$";
+                RegExp regex = RegExp(pattern, caseSensitive: false, unicode: true, dotAll: true);
+                if(!regex.hasMatch(value!))
+                  ret = 'Enter a valid name';
+                return ret;
+              },
+             keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
+                labelText: labelText,
+                prefixIcon:const Icon(Icons.person),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
+                
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  } // build
+} // FormDoctTile
 
 
+//Class that implement a custom-made [ListTile] to manage textboxes containing numbers in a [Form].
+///You must provide a controller, a label that is shown as helper, and an icon.
+///The [FormPswTile] content is valid if it contains strings only. This is checked via a regex.
 
+final FancyPasswordController _passwordController = FancyPasswordController();
+class FormPswTile extends ListTile {
+  final controller;
+  final labelText;
+  final icon;
+
+  FormPswTile({this.icon, this.controller, this.labelText});
+
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    return ListTile(
+      leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[     
+            Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 2.0),
+            child: FancyPasswordField(
+                passwordController: _passwordController,
+                controller: controller,
+                validationRules: {
+                  DigitValidationRule(),
+                  UppercaseValidationRule(),
+                  SpecialCharacterValidationRule(),
+                  MinCharactersValidationRule(6),
+                },
+                strengthIndicatorBuilder: (strength) => Text(
+                  strength.toString(),
+                  
+                ),
+               
+
+                validator: (value) {
+                  return _passwordController.areAllRulesValidated
+                      ? null
+                      : 'Not Validated';
+                },
+
+                keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
+                labelText: labelText,
+                prefixIcon:const Icon(Icons.key),
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                )
+                
+              ),
+            ),
+          ),
+         
+        ],
+      ),
+    );
+  } // build
+} // FormPswTile
+
+ 
 
 ///Class that implement a custom-made [ListTile] to manage dropdown menus containing numbers in a [Form].
 ///You must provide a label that is shown as helper, the value to show, the items to show, a callback to define the behaviour of the field when it changes, and an icon.

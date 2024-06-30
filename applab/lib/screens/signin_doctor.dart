@@ -1,13 +1,17 @@
 import 'package:applab/models/doctordatabase.dart';
+import 'package:applab/screens/login.dart';
+import 'package:applab/utils/format.dart';
 import 'package:flutter/material.dart';
 import 'package:applab/models/doctor.dart';
 import 'package:applab/models/doctordatabase.dart';
 import 'package:hive/hive.dart';
+import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 
 
 class SignInDoctor extends StatefulWidget{
   //final ListDoctor listDoctor;
   SignInDoctor({Key? key}):super(key:key);
+  static const routeDisplayName = 'Signin Page';
   @override
   State<SignInDoctor> createState() => _SignInDoctorState();
   //final Box<Doctordatabase> databaseBox= Hive.box<Doctordatabase>('myBox');
@@ -40,109 +44,87 @@ class _SignInDoctorState extends State<SignInDoctor>{
     @override
      Widget build(BuildContext context) {
      return Scaffold(
-      appBar: AppBar( backgroundColor:Color.fromRGBO(36, 208, 220, 1)),
-      body: SingleChildScrollView(
+      appBar: AppBar( 
+       centerTitle: true,
+        title: Text(SignInDoctor.routeDisplayName,
+                    style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 40.0,
+                        fontWeight:FontWeight.bold,
+                       ),)
+                       ,
+        backgroundColor:Color.fromRGBO(36, 208, 220, 1),
        
-        child: Container(
-          width: double.infinity,
-          padding: const EdgeInsets.symmetric(horizontal: 40),
-          height: MediaQuery.of(context).size.height,
-        color:Color.fromRGBO(36, 208, 220, 1),
-        child: 
-        Column(
+      ),
+      body: Stack(
+        children: [ 
+                    Container(
+                      
+                      color:  Color.fromRGBO(36, 208, 220, 1),
+                    ), 
+                
+      Center(
+        child: _buildForm(context),
+      ),
+        ],
+        ),
+     );
+     } // build
+            
+    Widget _buildForm(BuildContext context) {
+    return Form(
+      
+      key: formKey,
+      child: Padding(
+        
+        padding: const EdgeInsets.symmetric(horizontal: 2.0),
+        child: ListView(
+          
+          children: <Widget>[
+             SingleChildScrollView(
+           
+        child:  Column(
           mainAxisAlignment: MainAxisAlignment.start ,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            
-        SizedBox(
-              height: 100.0,
-        ),
-            
-        Text("Sign up",
-            style: TextStyle(
-              fontSize: 30,
-              fontWeight: FontWeight.bold,
-              color: Colors.white,
-        ),),
-           
-         SizedBox(
-                height: 30,
+            SizedBox(
+                height: 10,
          ),
 
         Text( "Create your doctor account",
-                    style: TextStyle(fontSize: 15, color: Colors.white),
+                    style: TextStyle(fontSize: 18, color: Colors.white),
         ),
-
-        SizedBox(
+             SizedBox(
               height:40.00
-        ),
-            
-        Padding(
-              padding: EdgeInsets.symmetric(horizontal:15),
-              child: TextField(
-                controller: _nameDoctor,
-                decoration: InputDecoration(
-                  hintText: "Enter your last name",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none
-                    ),
-                  fillColor: Colors.white.withOpacity(0.8),
-                  filled: true,
-                  prefixIcon:const Icon(Icons.person)
-                ),),
-        ),
+               ),
+
+        FormDoctTile(labelText: 'Enter a valid username',
+              controller: _nameDoctor,
               
+            ),
         SizedBox(
-                height: 25,
-        ),
+                height: 40,
+        ), 
            
-        Padding(
-              padding: EdgeInsets.symmetric(horizontal:15),
-              child: TextField(
-                controller: _emailDoctor,
-                decoration: InputDecoration(
-                  hintText: "Email",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none
+            FormEmailTile(labelText: 'Enter a valid mail adress',
+              controller: _emailDoctor,
+              
+            ),
+               SizedBox(
+                height: 40,
+        ), 
+ FormPswTile(labelText: 'Enter a valid password',
+              controller: _passwordDoctor,
+              
+            ),
+             
+                  SizedBox(
+                    height: 40,
                   ),
-                  fillColor: Colors.white.withOpacity(0.8),
-                  filled: true,
-                  prefixIcon:const Icon(Icons.mail)
-                ),
-                 ),
-          ),
-               
-               
-        SizedBox(
-                height: 25,
-        ),
-             
-             
-        Padding(
-              padding: EdgeInsets.symmetric(horizontal:15),
-              child: TextField(
-                controller: _passwordDoctor,
-                decoration: InputDecoration(
-                  hintText: "Password",
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(18),
-                    borderSide: BorderSide.none
-                  ),
-                  fillColor: Colors.white.withOpacity(0.8),
-                  filled: true,
-                  prefixIcon:const Icon(Icons.password)
-                ),
-                 ),
-        ),
-             
-             
-        SizedBox(
-          height: 35,
-        ),
-               
-        Container(
+
+
+
+                  Container(
                      height: 60,
                     width: 250,
                     decoration: BoxDecoration(
@@ -162,26 +144,43 @@ class _SignInDoctorState extends State<SignInDoctor>{
                       ),
                     )
           ),
+
+
           ],
-        ),
+          ),
         
-        )
-       )
-      );
-     }//build
+        
+        ),
+            
+
+             
+
+            
+           ],
+           
+           ),
+           
+           ),
+           
+           );
+          } // _buildForm
+          
+    
+
+     
 
     void _validateAndSave(BuildContext context)async{
-   //   if (formKey.currentState!.validate()){
-       // Doctor newDoctor = Doctor(surname: _nameDoctor.text, email: _emailDoctor.text, password: _passwordDoctor.text );
-        //widget.listDoctor.addDoctor(newDoctor);
-       // widget.listDoctor.addDoctor(newDoctor);
-       var newDoctor = Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
-       var box= await Hive.openBox<Doctordatabase>('doctors');
-       box.add(newDoctor);
+       if (formKey.currentState!.validate()){
+          //Doctor newDoctor = Doctor(surname: _nameDoctor.text, email: _emailDoctor.text, password: _passwordDoctor.text );
+          //widget.listDoctor.addDoctor(newDoctor);
+            var newDoct= Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
+            var box= await Hive.openBox<Doctordatabase>('doctors');
+            box.add(newDoct);
        //widget.listDoctor.addDoctor(newDoctor);
-        Navigator.pop(context);
-        
-    //  }
+          Navigator.pop(context);
+       
+    
       
     }
-  } //SignInpage 
+  } 
+  }//SignInpage 

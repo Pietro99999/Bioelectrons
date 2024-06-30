@@ -38,10 +38,12 @@ class HomePage extends StatelessWidget {
         ],
       ),
      
-      body: Center(
+      body:Center(
+        
         
           child: Consumer<ModifyPatient>(
           builder: (context, modpat, child) {
+            
 
             return modpat.newPatient.isEmpty
                 ? Text('The patient list is currently empty')
@@ -49,38 +51,56 @@ class HomePage extends StatelessWidget {
                     itemCount: modpat.newPatient.length,
                     itemBuilder: (context, patientIndex) {
                       
-                     
-                      return Card(
-                        elevation: 5,
-                        color:Color.fromARGB(195, 178, 218, 255),
+                    
+                      return Center(
+                        child: Column(
+
+                     children:[ 
+                      SizedBox(
+                        height:10,
+                      ),
+                      Container(
+                        width:double.infinity,
+                        height:70,
+                      child: Card(
+                        elevation: 15,
+                        shadowColor: Color.fromARGB(255, 115, 224, 228),
+                        color:modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 178, 218, 255): Color.fromRGBO(239, 182, 235, 0.902),
                         child: ListTile(
-                          leading: Icon(MdiIcons.faceManProfile, color: Color.fromRGBO(35, 71, 101, 0.902),), 
+                          leading: Icon(modpat.newPatient[patientIndex].sex == false ? MdiIcons.faceManProfile: MdiIcons.faceWomanProfile , color: Color.fromRGBO(35, 71, 101, 0.902), ),
                           trailing: Icon(MdiIcons.arrowRight, color: Color.fromRGBO(35, 71, 101, 0.902),),
                           title:
-                              Text('Patient : ${modpat.newPatient[patientIndex].patients}',
-                         style: TextStyle(
-                            color: Color.fromRGBO(35, 71, 101, 0.902),
-                            fontSize: 15.0,
-                        
-                        ),
-                        ),
-                              
-                              
-                              
+                           RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Patient: ',
+                    style: const TextStyle(fontSize: 15, color: Color.fromRGBO(35, 71, 101, 0.902)), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].patients}', style: TextStyle(fontSize: 18,fontWeight: FontWeight.bold, color: Color.fromRGBO(35, 71, 101, 0.902)), ),
+               ],
+              ),
+           ),    
                           
                           onTap: () => _toPatientHome(context, modpat, patientIndex,ButtonErrorDemo()),
                         ),
+                        
+                      ),
+                      ),
+                        ],),
                       );
-                    });
+                       }
+                    );
           },
         ),
       ),
       
       floatingActionButton: FloatingActionButton(
+        highlightElevation:100,
         backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
         child: Icon(MdiIcons.plus, color:Colors.white),
         onPressed: () => _toPatientPage(context, Provider.of<ModifyPatient>(context, listen: false), -1, ButtonErrorDemo()),
       ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   } //build
 
