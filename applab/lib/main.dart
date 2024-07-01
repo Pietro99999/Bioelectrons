@@ -6,6 +6,7 @@ import 'package:provider/provider.dart';
 import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:applab/models/patientdatabase.dart';
+import 'package:applab/models/indexlistona.dart';
 
 void main() async{
 
@@ -28,6 +29,7 @@ class MyApp extends StatelessWidget {
     return MultiProvider(providers: 
     [
     ChangeNotifierProvider(create: (context)=> ModifyPatient()),
+     ChangeNotifierProvider(create: (context)=> IndexListona()),
     ],
     
   

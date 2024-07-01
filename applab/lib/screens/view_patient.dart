@@ -10,6 +10,8 @@ import 'package:http/http.dart' as http;
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:applab/utils/button.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:applab/models/indexlistona.dart';
 
 
 
@@ -17,17 +19,17 @@ class PatientHome extends StatelessWidget {
    final int patientIndex;
    final ButtonErrorDemo button;
    final ModifyPatient modpat;
-   final String day = '2023-05-31'; 
+   final String day = '2023-04-27'; 
 //GIORNI INTERESSANTI:
 //2024-04-23 i dati sleep richiedono [0] e dorme poco perchè va a letto a mezzanotte (348 minuti)
-//2024/04/26 due eventi ma uno breve    BELLO COME SEMPIO
+//2024/04/26 due eventi ma uno breve. UN EVENTO SEGNALATO    BELLO COME SEMPIO
 //2024/04/28 no eventi
 //2024/05/30 due eventi ma brevi
-//2024/05/29
+//2024/05/29 due eventi DUE EVENTI SEGNALATI
 //2024/12/25 NO data
 //dal 2023/11/30  al 2024/02/09 non ci sono dati 
 //2023/08/15 NO dati sleep
-//2023-04-27 è andato a letto dopo mezzanotte
+//2023-04-27 è andato a letto dopo mezzanotte. UN EVENTO
 
   //PatientPage constructor
   PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
@@ -233,7 +235,7 @@ class PatientHome extends StatelessWidget {
                   //inferiore ai 15 minuti (15*12=180) lo elimino da listona perchè
                   //può essere dovuto a cause non legate all'assunzione di cocaina 
                   for (int i=(listona.length-1); i>=0; i--){
-                    if (listona[i].length<180){
+                    if (listona[i].length<30){
                       listona.removeAt(i);                      
                     };//if
                   };//for
@@ -244,8 +246,16 @@ class PatientHome extends StatelessWidget {
                   listona = _addBefore(listona);
                   listona = _addAfter(listona);
                   //print('listona add = $listona');
+                   int lunghezza= listona.length;
+                  int primoindice; 
+                  if (lunghezza != 0){
+                    
+                    int firstindex= (listona[(Provider.of<IndexListona>(context, listen: false)).i])[0];
+                    Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
+                  }
                  
-                    Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep, listona: listona)));
+                  print(Provider.of<IndexListona>(context,listen:false).primoindice);
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep, listona: listona, times: lunghezza, data: day, calories: sumCal.floor(), sleeping:sleep?[0])));
                   }//se abbiamo tutti i dati
                   else{
                      String messaggio = 'For the selected day there is not enough data available to provide an accurate answer';
