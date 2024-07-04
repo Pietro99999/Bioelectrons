@@ -19,13 +19,25 @@ class Patientdatabase extends HiveObject{
   String height;
 
   @HiveField(4)
-  bool sex=true;
-
+  bool sex;
+  
   @HiveField(5)
+  String year;
+
+  @HiveField(6)
+  String grav;
+
+  @HiveField(7)
+  String treatm;
+
+  @HiveField(8)
+  List drug;
+
+  @HiveField(9)
   String doctorname;
 
 
   //Constructor
-  Patientdatabase(this.patients, this.age,  this.weight, this.height, this.doctorname);
+  Patientdatabase(this.patients, this.age,  this.weight, this.height, this.sex, this.year, this.grav,this.treatm,this.drug, this.doctorname);
   
 }

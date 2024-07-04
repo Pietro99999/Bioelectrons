@@ -175,11 +175,17 @@ class _SignInDoctorState extends State<SignInDoctor>{
           //widget.listDoctor.addDoctor(newDoctor);
             var newDoct= Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
             var box= await Hive.openBox<Doctordatabase>('doctors');
-            box.add(newDoct);
+           if (!box.containsKey(_emailDoctor.text)) {
+              box.add(newDoct);
+           }else{
+              ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text('The mail is already registered')));
+
+           }
+
        //widget.listDoctor.addDoctor(newDoctor);
           Navigator.pop(context);
        
-    
       
     }
   } 

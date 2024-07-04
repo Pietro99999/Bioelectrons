@@ -1,8 +1,14 @@
+import 'dart:convert';
+
 import 'package:applab/models/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/homepage.dart';
 import 'package:applab/utils/button.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import 'package:flutter/widgets.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/models/patient.dart';
 import 'package:applab/utils/format.dart';
@@ -15,7 +21,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class PatientPage extends StatefulWidget {
     final int patientIndex;
-
     final ModifyPatient modpat;
     final ButtonErrorDemo button;
 
@@ -30,7 +35,10 @@ class PatientPage extends StatefulWidget {
  State<PatientPage> createState() => _PatientPage();
   
 }//PatientPage
-
+ List <String> gravity= ['Low','Medium','High'];
+ List <String> treat= ['Yes','No'];
+ Map<String, bool>  drug= {'No':false, 'Benzodiazepine':false,'Bromocriptina':false,'Amantadina':false};
+ List<String> _drugtreat=[];
 class _PatientPage extends State<PatientPage> {
 
   final formKey = GlobalKey<FormState>();
@@ -40,7 +48,13 @@ class _PatientPage extends State<PatientPage> {
   TextEditingController _controllerAge = TextEditingController();
   TextEditingController _controllerWeight = TextEditingController();
   TextEditingController _controllerHeight = TextEditingController();
-  bool? _controllerSex;
+  TextEditingController _controllerYear = TextEditingController();
+  bool _controllerSex=true;
+  String _currentOption=gravity[0];
+  String _underTreatment=treat[0];
+  
+  
+
 
   final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
 
@@ -62,7 +76,9 @@ class _PatientPage extends State<PatientPage> {
     _controllerWeight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].weight.toString();
     _controllerHeight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].height.toString();
     _controllerSex= widget.patientIndex == -1 ? true : widget.modpat.newPatient[widget.patientIndex].sex;
-    
+    _controllerYear.text= widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].year.toString();
+
+  
     super.initState();
   } // initState
 
@@ -73,7 +89,8 @@ class _PatientPage extends State<PatientPage> {
     _controllerAge.dispose();
     _controllerWeight.dispose();
     _controllerHeight.dispose();
-   
+    _controllerYear.dispose();
+  
     super.dispose();
   } // dispose
 
@@ -214,32 +231,485 @@ class _PatientPage extends State<PatientPage> {
         
         ],  
          ),
+
+          SizedBox(
+              height:30,
+            ),
+          FormNumberTileYear(
+              labelText: 'Starting year of coke assumption',
+              controller: _controllerYear,
+              icon: MdiIcons.calendarAccount,
+            ),
+            SizedBox(
+              height:30,
+            ),
+
+ Text(
+            'How many times does the patient take coke?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+             fontSize:17,
+             fontWeight: FontWeight.bold,
+             color: Colors.white,
+
+
+            ),
+            
+            ),
+ 
+        
+            
+            Column(  
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[ 
+              ListTile( 
+                title: const Text('1-5 times for month (LOW)',style: TextStyle(color:Colors.white,fontSize:18),), 
+         leading:   Radio( 
+          fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Colors.white;}
+          }
+              ),
+          splashRadius:5, 
+         value:gravity[0] ,  
+    groupValue: _currentOption,  
+    onChanged: (value) {
+                   setState(() {
+                    _currentOption =value.toString();
+                    }  );
+                    }
+                    ),
+              ),
+              
+
+                 ListTile( 
+                title: const Text('6-10 times for month (MEDIUM)',style: TextStyle(color:Colors.white, fontSize:18 )), 
+         leading:   Radio( 
+           fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Colors.white;}
+          }
+              ),
+          splashRadius:5, 
+         value:gravity[1] ,  
+    groupValue: _currentOption,   
+    onChanged: (value) {
+                   setState(() {
+                    _currentOption = value.toString();
+                    }  );
+                    }
+                    ),
+              ),
+                
+         
+              ListTile( 
+                title: const Text('More than 10 times (HIGH)', style: TextStyle(color:Colors.white,fontSize:18),), 
+         leading:   Radio( 
+          
+          splashRadius:5, 
+           fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Colors.white;}
+          }
+              ),
+         value:gravity[2] ,  
+    groupValue: _currentOption,   
+    onChanged: (value) {
+                   setState(() {
+                    _currentOption = value.toString();
+                    }  );
+                    }
+                    ),
+              ),
+
+               SizedBox(
+              height:30,
+            ),
+
+              
+
+ Text(
+            'Is the patient under treatment?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+             fontSize:17,
+             fontWeight: FontWeight.bold,
+             color: Colors.white,
+
+
+            ),
+            
+            ),
+           
+Column(
+             children: <Widget>[ 
+               ListTile( 
+                title: const Text('YES',style: TextStyle(color:Colors.white,fontSize:18 ),), 
+         leading:   Radio( 
+           fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Colors.white;}
+          }
+              ),
+          splashRadius:5, 
+         value:treat[0] ,  
+    groupValue: _underTreatment,   
+    onChanged: (value) {
+                   setState(() {
+                      print(_underTreatment);
+                    _underTreatment = value.toString();
+                    
+                    }  );
+                    }
+                    ),
+                    ),
+                     ListTile( 
+                title: const Text('NO', style: TextStyle(color:Colors.white,fontSize:18),), 
+         leading:   Radio( 
+          
+          splashRadius:5, 
+           fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Colors.white;}
+          }
+              ),
+         value:treat[1] ,  
+    groupValue: _underTreatment,   
+    onChanged: (value) {
+                   setState(() {
+                      print(_underTreatment);
+                    _underTreatment = value.toString();
+                       
+                    }  );
+                    }
+                    ),
+                  
+             
+              
+              ),
+
+             
+             ],
+             ),
+           
+          SizedBox(
+              height:30,
+            ),
+
+ Text(
+           _underTreatment =='Yes'? 'Which treatment is he doing?':'Which treatment do you reccomend?',
+            textAlign: TextAlign.center,
+            style: TextStyle(
+             fontSize:17,
+             fontWeight: FontWeight.bold,
+             color: Colors.white,
+
+
+            ),
+            
+            ),
+
+
+            
+            // IF UNDER TREATMENT
+
+              if (_underTreatment== 'Yes')
+              Column(
+             children: <Widget>[ 
+
+            CheckboxListTile(
+              title: Text('No', style: TextStyle(color:Colors.white,fontSize:18),),
+              value: drug['No'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid), 
+              controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (value) {
+                setState(() {
+                  if( drug['No'] = value!){
+                
+                 _drugtreat.add('No');}else{if(_drugtreat.contains('No')==true){
+                  _drugtreat.remove('No');}}
+                 
+                });
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Benzodiazepine', style: TextStyle(color:Colors.white),),
+              value:  drug['Benzodiazepine'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+               controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: ( value) {
+                setState(() {
+                  if(drug['Benzodiazepine'] = value!){
+                  
+                  _drugtreat.add('Benzodiazepine');
+                  }else{if(_drugtreat.contains('Benzodiazepine')==true){
+                    _drugtreat.remove('Benzodiazepine');}
+                  }
+                }
+                );
+              },
+            ),
+            CheckboxListTile(
+              title: Text('Bromocriptina', style: TextStyle(color:Colors.white),),
+              value:drug['Bromocriptina'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+              controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (value) {
+                setState(() {
+                   if(drug['Bromocriptina'] = value!){
+                  
+                  _drugtreat.add('Bromocriptina');
+                  }else{if(_drugtreat.contains('Bromocriptina')==true){
+                    _drugtreat.remove('Bromocriptina');}
+                  }
+                });
+              },
+            ),
+                        CheckboxListTile(
+              title: Text('Amantadina', style: TextStyle(color:Colors.white),),
+              value: drug['Amantadina'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+               controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (value) {
+                setState(() {
+                  if(drug['Amantadina'] = value!){
+                  
+                  _drugtreat.add('Amantadina');
+                  }else{ if(_drugtreat.contains('Amantadina')==true){
+                    _drugtreat.remove('Amantadina');
+                  }
+                  }
+                });
+              },
+            ),
+            ],
+            ),
+
+
+          // IF NOT UNDER TREATMENT
+          if (_underTreatment == 'No')
+            Column(
+             children: <Widget>[ 
+            CheckboxListTile(
+              title:  RichText(
+                    text: TextSpan(
+                    text: 'No ',
+                    style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontSize:18), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '(LOW)', style: TextStyle( color:  Colors.green,fontWeight: FontWeight.bold )),
+               ],
+              ),
+           ),
+              value: drug['No'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+               controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (bool? value) {
+                setState(() {
+                 if( drug['No'] = value!){
+                
+                 _drugtreat.add('No');}else{if(_drugtreat.contains('No')==true){
+                  _drugtreat.remove('No');}}
+                });
+              },
+            ),
+            CheckboxListTile(
+                title:  RichText(
+                    text: TextSpan(
+                    text: 'Benzodiazepine ',
+                    style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontSize:18), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '(LOW, ', style: TextStyle( color:  Colors.green,fontWeight: FontWeight.bold )),
+                    TextSpan(text: ' MEDIUM)', style: TextStyle( color:  Colors.orange,fontWeight: FontWeight.bold )),
+               ],
+              ),
+           ),
+             
+              value: drug['Benzodiazepine'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+               controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (bool? value) {
+                setState(() {
+                  if(drug['Benzodiazepine'] = value!){
+                  
+                  _drugtreat.add('Benzodiazepine');
+                  }else{if(_drugtreat.contains('Benzodiazepine')==true){
+                    _drugtreat.remove('Benzodiazepine');}
+                  }
+                });
+              },
+            ),
+            CheckboxListTile(
+               title:  RichText(
+                    text: TextSpan(
+                    text: 'Bromocriptina ',
+                    style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontSize:18), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '(MEDIUM,', style: TextStyle( color:  Colors.orange,fontWeight: FontWeight.bold )),
+                    TextSpan(text: ' HIGH)', style: TextStyle( color:  Colors.red,fontWeight: FontWeight.bold )),
+               ],
+              ),
+           ),
+             
+              value: drug['Bromocriptina'],
+              side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+              controlAffinity: ListTileControlAffinity.leading,
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (bool? value) {
+                setState(() {
+                   if(drug['Bromocriptina'] = value!){
+                  
+                  _drugtreat.add('Bromocriptina');
+                  }else{if(_drugtreat.contains('Bromocriptina')==true){
+                    _drugtreat.remove('Bromocriptina');}
+                  }
+                });
+              },
+            ),
+                        CheckboxListTile(
+                               title:  RichText(
+                    text: TextSpan(
+                    text: 'Amantadina ',
+                    style: const TextStyle(color: Color.fromARGB(255, 255, 255, 255),fontSize:18), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '(HIGH)', style: TextStyle( color:  Colors.red,fontWeight: FontWeight.bold )),
+               ],
+              ),
+           ),
+              
+              value: drug['Amantadina'],
+               controlAffinity: ListTileControlAffinity.leading,
+               side: BorderSide(width:3,color: Colors.white,style: BorderStyle.solid),
+              fillColor:  MaterialStateProperty.resolveWith(
+          (states) {
+            if (states.contains(MaterialState.selected)) {
+                return  Color.fromARGB(195, 10, 78, 91);          
+              } else{ return Color.fromRGBO(36, 208, 220, 1);}
+          }
+              ),
+              onChanged: (bool? value) {
+                setState(() {
+                  if(drug['Amantadina'] = value!){
+                  
+                  _drugtreat.add('Amantadina');
+                  }else{ if(_drugtreat.contains('Amantadina')==true){
+                    _drugtreat.remove('Amantadina');
+                  }
+                  }
+                });
+              },
+            ),
+             ],
+             ),
+             
+
+
+
+              SizedBox(
+              height:30,
+            ),
+
+                
+           ]
+), 
+
+ 
           ],
         ),
       ),
     );
   } // _buildForm
 
-  
 
   //Utility method that validate the form and, if it is valid, save the new patient information.
   void _validateAndSave(BuildContext context)async {
      if(widget.button.bottonState()!=true){ 
        ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('You must push a botton')),);
+        SnackBar(content: Text('You must push a botton',style: TextStyle(color: Colors.red),), closeIconColor: Colors.amber,backgroundColor: const Color.fromARGB(255, 234, 119, 110),),);
        }
     if (widget.button.bottonStateM()==true ){
          _controllerSex=false;
     }
 
-   if(formKey.currentState!.validate() && widget.button.bottonState()==true){
+   if(formKey.currentState!.validate() && widget.button.bottonState()==true ){
+     //print(currentOption);
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
-      Patients newPatient = Patients(patients: _controllerName.text, age:_controllerAge.text, weight:_controllerWeight.text, height:_controllerHeight.text,sex:_controllerSex);
-      var newPat= Patientdatabase(_controllerName.text,_controllerAge.text, _controllerWeight.text, _controllerHeight.text, elemntname!);
+      Patients newPatient = Patients(patients: _controllerName.text, age:_controllerAge.text, weight:_controllerWeight.text, height:_controllerHeight.text,sex:_controllerSex, year:_controllerYear.text, grav:_currentOption, treatm:_underTreatment, drug:_drugtreat);
+      var newPat= Patientdatabase(_controllerName.text,_controllerAge.text, _controllerWeight.text, _controllerHeight.text, _controllerSex , _controllerYear.text, _currentOption,_underTreatment,_drugtreat, elemntname!);
       if (widget.patientIndex == -1) {
         widget.modpat.addPatient(newPatient);
-        var box= await Hive.openBox<Patientdatabase>('patients');
+       /*  const secureStorage = FlutterSecureStorage();
+        // if key not exists return null
+        final encryptionKeyString = await secureStorage.read(key: 'key');
+        if (encryptionKeyString == null) {
+        final key = Hive.generateSecureKey();
+        await secureStorage.write(
+          key: 'key',
+          value: base64UrlEncode(key),
+       );
+      }
+          final key = await secureStorage.read(key: 'key');
+          final encryptionKeyUint8List = base64Url.decode(key!);*/
+        
+        var box= await Hive.openBox<Patientdatabase>('patients'); //, encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
         box.add(newPat);
         } 
       else{
@@ -248,14 +718,35 @@ class _PatientPage extends State<PatientPage> {
         String oldage= provoiuspat.age;
         String oldheight = provoiuspat.height;
         String oldweight=provoiuspat.weight;
-        //Bool sex= provoiuspat.sex;
+        bool oldsex=provoiuspat.sex;
+        String oldyear=provoiuspat.year;
+        String oldgrav = provoiuspat.grav;
+        String oldtreatm = provoiuspat.treatm;
+        List olddrug=provoiuspat.drug;
+        
         print(oldname);
         widget.modpat.editPatient(widget.patientIndex, newPatient);
         print(elemntname);
-        var oldpat=Patientdatabase(oldname, oldage, oldweight, oldheight, elemntname!);
+        var oldpat=Patientdatabase(oldname, oldage, oldweight, oldheight, oldsex, oldyear, oldgrav, oldtreatm, olddrug, elemntname!);
         int? oldondex= findIndex(oldpat);
-        var box= await Hive.openBox<Patientdatabase>('patients');
+        
+        /*const secureStorage = FlutterSecureStorage();
+        // if key not exists return null
+        final encryptionKeyString = await secureStorage.read(key: 'key');
+        if (encryptionKeyString == null) {
+        final key = Hive.generateSecureKey();
+        await secureStorage.write(
+          key: 'key',
+          value: base64UrlEncode(key),
+       );
+      }
+          final key = await secureStorage.read(key: 'key');
+          final encryptionKeyUint8List = base64Url.decode(key!); */
+        
+        var box= await Hive.openBox<Patientdatabase>('patients'); // ,encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
         await box.putAt(oldondex!, newPat);
+        
+
       } 
       //Navigator.popUntil(context, ModalRoute.withName('/Home Page'));
       Navigator.pop(context);
@@ -270,15 +761,32 @@ class _PatientPage extends State<PatientPage> {
       String oldage= provoiuspat.age;
       String oldheight = provoiuspat.height;
       String oldweight=provoiuspat.weight;
+      bool oldsex=provoiuspat.sex;
+      String oldyear=provoiuspat.year;
+      String oldgrav = provoiuspat.grav;
+      String oldtreatm = provoiuspat.treatm;
+      List olddrug=provoiuspat.drug;
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname= await sharedPreferences.getString('USERNAMELOGGED');
       widget.modpat.removePatient(widget.patientIndex);
-      var oldpat=Patientdatabase(oldname, oldage, oldweight, oldheight, elemntname!);
-      var box= await Hive.openBox<Patientdatabase>('patients');
+      var oldpat=Patientdatabase(oldname, oldage, oldweight, oldheight,oldsex,oldyear, oldgrav,oldtreatm, olddrug, elemntname!);
+      /* const secureStorage = FlutterSecureStorage();
+        // if key not exists return null
+        final encryptionKeyString = await secureStorage.read(key: 'key');
+        if (encryptionKeyString == null) {
+        final key = Hive.generateSecureKey();
+        await secureStorage.write(
+          key: 'key',
+          value: base64UrlEncode(key),
+       );
+      }
+          final key = await secureStorage.read(key: 'key');
+          final encryptionKeyUint8List = base64Url.decode(key!); */
+         
+      var box= await Hive.openBox<Patientdatabase>('patients'); //, encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
       int? oldondex= findIndex(oldpat);
       box.deleteAt(oldondex!);
-      Navigator.pop(context);
-       
+       Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(),));
   }//_deleteAndPop
 
 } //Patient

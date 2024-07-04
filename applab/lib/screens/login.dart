@@ -157,7 +157,7 @@ class _LoginPageState extends State<LoginPage>{
                       for (var k=0; k<numeropat; k++){
                         Patientdatabase paziente= pazientinow[k];
                         if(paziente.doctorname == element.surname){//il dottore ha già un databse
-                          Patients pazientegiaiscritto = Patients(patients: paziente.patients, age: paziente.age, weight: paziente.weight, height: paziente.height,sex:paziente.sex);
+                          Patients pazientegiaiscritto = Patients(patients: paziente.patients, age: paziente.age, weight: paziente.weight, height: paziente.height,sex:paziente.sex, year:paziente.year, grav : paziente.grav, treatm: paziente.treatm, drug: paziente.drug);
                           listaprovvisoria.add(pazientegiaiscritto);
                         }
                       }

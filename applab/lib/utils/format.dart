@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/screens/homepage.dart';
 import 'package:fancy_password_field/fancy_password_field.dart';
-
+import 'package:step_progress_indicator/step_progress_indicator.dart';
 
 //nfinal GlobalKey<FlutterPwValidatorState> validatorKey = GlobalKey<FlutterPwValidatorState>();
 ///Class that implements a custom [StatelessWidget] that acts as a separator in a [Form].
@@ -250,7 +250,58 @@ class FormNumberTileHeight extends ListTile {
     );
   } // build
 } // FormNumberTileHeight
+///Class that implement a custom-made [ListTile] to manage textboxes containing numbers in a [Form].
+///You must provide a controller, a label that is shown as helper, and an icon.
+///The [FormNumberTileYear] content is valid if it contains numbers only. This is checked via a regex.
+class FormNumberTileYear extends ListTile {
+  final controller;
+  final labelText;
+  final icon;
 
+  FormNumberTileYear({this.icon, this.controller, this.labelText});
+
+  @override
+  Widget build(BuildContext context) {
+    Size screenSize = MediaQuery.of(context).size;
+    return ListTile(
+      leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          Container(
+            width: screenSize.width / 1.5,
+            child: TextFormField(
+              controller: controller,
+              validator: (value) {
+                String? ret;
+                String pattern = r'^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$';
+                RegExp regex = RegExp(pattern);
+
+                if(!regex.hasMatch(value!) )
+                ret = 'Must be a number.';
+                else if (1940>double.parse(value)|| double.parse(value)>2024)
+                ret = 'Must be a valid year (between 1940 and now) ';
+                return ret;
+               
+              },
+              
+              keyboardType: TextInputType.text,
+              decoration: InputDecoration(
+                fillColor: Colors.white.withOpacity(0.8),
+                filled: true,
+                labelText: labelText,
+                border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(18),
+                    borderSide: BorderSide.none
+                    ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  } // build
+} // FormNumberTileYear
 
 class FormNumberTile extends ListTile {
   final controller;
@@ -481,19 +532,62 @@ class FormPswTile extends ListTile {
                   DigitValidationRule(),
                   UppercaseValidationRule(),
                   SpecialCharacterValidationRule(),
-                  MinCharactersValidationRule(6),
+                  MinCharactersValidationRule(8),
                 },
-                strengthIndicatorBuilder: (strength) => Text(
-                  strength.toString(),
-                  
-                ),
-               
+                 strengthIndicatorBuilder: (strength) {
+            return Padding(
+              padding: const EdgeInsets.symmetric(vertical: 8),
+              child: StepProgressIndicator(
+                size:10,
+                totalSteps: 6,
+                roundedEdges: Radius.circular(18),
+                currentStep: getStep(strength),
+                selectedColor: getColor(strength)!,
+                unselectedColor: Colors.grey[300]!,
+              ),
+            );
+          },
 
-                validator: (value) {
-                  return _passwordController.areAllRulesValidated
-                      ? null
-                      : 'Not Validated';
+           validationRuleBuilder: (rules, value) {
+            return Wrap(
+              runSpacing: 8,
+              spacing: 4,
+              children: rules.map(
+                (rule) {
+                  final ruleValidated = rule.validate(value);
+                  return Chip(
+                   
+                    label: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        if (ruleValidated) ...[
+                          const Icon(
+                            Icons.check,
+                            color: Color(0xFF0A9471),
+                          ),
+                          const SizedBox(width: 8),
+                        ],
+                        Text(
+                          rule.name,
+                          style: TextStyle(
+                            color: ruleValidated
+                                ? const Color(0xFF0A9471)
+                                : Color.fromARGB(255, 208, 17, 17),
+                          ),
+                        ),
+                      ],
+                    ),
+                    
+                    backgroundColor: ruleValidated
+                        ? const Color(0xFFD0F7ED)
+                        : const Color(0xFFF4F5F6),
+                  );
                 },
+              ).toList(),
+            );
+          },
+
+
 
                 keyboardType: TextInputType.text,
               decoration: InputDecoration(
@@ -515,6 +609,40 @@ class FormPswTile extends ListTile {
     );
   } // build
 } // FormPswTile
+ 
+ int getStep(double strength) {
+    if (strength == 0) {
+      return 0;
+    } else if (strength < .1) {
+      return 1;
+    } else if (strength < .2) {
+      return 2;
+    } else if (strength < .4) {
+      return 3;
+    } else if (strength < .6) {
+      return 4;
+    } else if (strength < .7) {
+      return 5;
+    }
+    return 8;
+  }
+
+  Color? getColor(double strength) {
+    if (strength == 0) {
+      return Colors.grey[300];
+    } else if (strength < .1) {
+      return Color.fromARGB(255, 185, 19, 7);
+    } else if (strength < .2) {
+      return Color.fromARGB(255, 211, 55, 44);
+    } else if (strength < .4) {
+      return Colors.orange;
+    } else if (strength < .6) {
+      return Colors.yellow;
+    } else if (strength < .7) {
+      return  Colors.green;
+    }
+    return  Colors.green;
+  }
 
  
 

@@ -21,14 +21,19 @@ class PatientdatabaseAdapter extends TypeAdapter<Patientdatabase> {
       fields[1] as String,
       fields[2] as String,
       fields[3] as String,
+      fields[4] as bool,
       fields[5] as String,
-     ); // ..sex = fields[4] as bool;
+      fields[6] as String,
+      fields[7] as String,
+      (fields[8] as List).cast<dynamic>(),
+      fields[9] as String,
+    );
   }
 
   @override
   void write(BinaryWriter writer, Patientdatabase obj) {
     writer
-      ..writeByte(6)
+      ..writeByte(10)
       ..writeByte(0)
       ..write(obj.patients)
       ..writeByte(1)
@@ -40,6 +45,14 @@ class PatientdatabaseAdapter extends TypeAdapter<Patientdatabase> {
       ..writeByte(4)
       ..write(obj.sex)
       ..writeByte(5)
+      ..write(obj.year)
+      ..writeByte(6)
+      ..write(obj.grav)
+      ..writeByte(7)
+      ..write(obj.treatm)
+      ..writeByte(8)
+      ..write(obj.drug)
+      ..writeByte(9)
       ..write(obj.doctorname);
   }
 

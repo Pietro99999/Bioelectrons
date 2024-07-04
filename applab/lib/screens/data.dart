@@ -184,6 +184,7 @@ import 'package:intl/intl.dart';
                     print(Provider.of<IndexListona>(context,listen:false).primoindice);
                    return Padding(padding: const EdgeInsets.all(8.0),
                    child: Chart(
+                    rebuild:true,
                    // List.generate(10000, (index)
                    //listona[(Provider.of<IndexListona>(context, listen: false)).i]
           data:  List.generate((listona[(Provider.of<IndexListona>(context, listen: false)).i]).length, (index)=> {

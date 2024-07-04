@@ -1,7 +1,9 @@
 import 'package:applab/screens/data.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:applab/models/modifypatient.dart';
 import 'package:applab/screens/patientpage.dart';
+import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:applab/utils/impact.dart';
 import 'dart:convert'show jsonDecode;
@@ -91,8 +93,42 @@ class PatientHome extends StatelessWidget {
       child: Column(
       children: [
                   const SizedBox(height:40),
-                  Text('${modpat.newPatient[patientIndex].patients}',  style: TextStyle(fontSize: 22,color: modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 13, 194, 231).withOpacity(0.6):Color.fromARGB(239, 208, 17, 183).withOpacity(0.6), fontWeight: FontWeight.bold ),), 
                   
+                  Text('${modpat.newPatient[patientIndex].patients}',  style: TextStyle(fontSize: 22,color: modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 13, 194, 231).withOpacity(0.6):Color.fromARGB(239, 208, 17, 183).withOpacity(0.6), fontWeight: FontWeight.bold ),), 
+                  SizedBox(
+          height:25,
+        ),
+                  Card(
+      color: modpat.newPatient[patientIndex].grav=='Low'? const Color.fromARGB(255, 91, 210, 95):modpat.newPatient[patientIndex].grav=='Medium'? Colors.orange:Colors.red,
+      child: Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+        child: Column(
+          children: [
+         RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Severity: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].grav }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),],
+        ),
+        )
+        )
+        ),
+        SizedBox(
+          height:25,
+        ),
+        Card(
+           color: modpat.newPatient[patientIndex].sex== false ? Color.fromARGB(195, 131, 229, 248).withOpacity(0.6):Color.fromARGB(240, 250, 185, 241).withOpacity(0.6),
+      child: Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
+        child: Column(
+          children: [
                   RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
@@ -135,6 +171,49 @@ class PatientHome extends StatelessWidget {
                ],
               ),
            ),
+            RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Starting year of coke assumption: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].year}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+
+             
+              RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Patient under treatment: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].treatm }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+           
+            
+            
+           
+             
+              RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Patient treatment: ',
+                    style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text: '${modpat.newPatient[patientIndex].drug }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+               ],
+              ),
+           ),
+           ],
+        ),
+        )
+        )
+        ),
+        
                 
                 ],
       
@@ -146,6 +225,7 @@ class PatientHome extends StatelessWidget {
 
 
       floatingActionButton: FloatingActionButton(
+        
         backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
         child: Text('DATA', 
         style: TextStyle(
@@ -264,7 +344,9 @@ class PatientHome extends StatelessWidget {
                     ..showSnackBar(SnackBar(content: Text(messaggio)));                   
                   }//se non abbiamo dati sufficienti 
                 },//build
-    ));
+    ),
+    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    );
   }//widget
   
 Future<List?> _requestCal() async {
