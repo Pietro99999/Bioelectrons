@@ -1,6 +1,7 @@
 import 'package:applab/models/doctordatabase.dart';
 import 'package:applab/screens/login.dart';
 import 'package:applab/utils/format.dart';
+import 'package:fancy_password_field/fancy_password_field.dart';
 import 'package:flutter/material.dart';
 import 'package:applab/models/doctor.dart';
 import 'package:applab/models/doctordatabase.dart';
@@ -11,7 +12,7 @@ import 'package:material_design_icons_flutter/material_design_icons_flutter.dart
 class SignInDoctor extends StatefulWidget{
   //final ListDoctor listDoctor;
   SignInDoctor({Key? key}):super(key:key);
-  static const routeDisplayName = 'Signin Page';
+  static const routeDisplayName = 'Sign Up';
   @override
   State<SignInDoctor> createState() => _SignInDoctorState();
   //final Box<Doctordatabase> databaseBox= Hive.box<Doctordatabase>('myBox');
@@ -22,7 +23,7 @@ class _SignInDoctorState extends State<SignInDoctor>{
 
     TextEditingController _nameDoctor = TextEditingController();
     TextEditingController _emailDoctor = TextEditingController();
-    TextEditingController _passwordDoctor = TextEditingController();
+    TextEditingController _passwordDoctor =  TextEditingController();
 
     @override
     void initState() {
@@ -88,19 +89,18 @@ class _SignInDoctorState extends State<SignInDoctor>{
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
             SizedBox(
-                height: 10,
+                height: 40,
          ),
 
         Text( "Create your doctor account",
                     style: TextStyle(fontSize: 18, color: Colors.white),
         ),
              SizedBox(
-              height:40.00
+              height:20
                ),
 
-        FormDoctTile(labelText: 'Enter a valid username',
+        FormDoctTile(labelText: 'Enter a valid name',
               controller: _nameDoctor,
-              
             ),
         SizedBox(
                 height: 40,
@@ -170,23 +170,26 @@ class _SignInDoctorState extends State<SignInDoctor>{
      
 
     void _validateAndSave(BuildContext context)async{
+         var box = Hive.isBoxOpen('doctors') ? Hive.box<Doctordatabase>('doctors') : await Hive.openBox<Doctordatabase>('doctors');
+
+        bool emailExists = box.values.any((doctor) => doctor.email == _emailDoctor.text);
+      if(emailExists){
+            ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('The mail is already registered')));
+      }else{
+
        if (formKey.currentState!.validate()){
           //Doctor newDoctor = Doctor(surname: _nameDoctor.text, email: _emailDoctor.text, password: _passwordDoctor.text );
           //widget.listDoctor.addDoctor(newDoctor);
             var newDoct= Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
             var box= await Hive.openBox<Doctordatabase>('doctors');
-           if (!box.containsKey(_emailDoctor.text)) {
-              box.add(newDoct);
-           }else{
-              ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(content: Text('The mail is already registered')));
-
-           }
+         
 
        //widget.listDoctor.addDoctor(newDoctor);
           Navigator.pop(context);
        
       
     }
+      }
   } 
   }//SignInpage 

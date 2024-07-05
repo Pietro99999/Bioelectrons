@@ -1,4 +1,6 @@
+import 'package:applab/models/doctordatabase.dart';
 import 'package:flutter/material.dart';
+import 'package:hive/hive.dart';
 import 'package:intl/intl.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/screens/homepage.dart';
@@ -280,8 +282,9 @@ class FormNumberTileYear extends ListTile {
                 if(!regex.hasMatch(value!) )
                 ret = 'Must be a number.';
                 else if (1940>double.parse(value)|| double.parse(value)>2024)
-                ret = 'Must be a valid year (between 1940 and now) ';
+                ret = 'Valid year between 1940 and now';
                 return ret;
+
                
               },
               
@@ -375,7 +378,7 @@ class FormStringTile extends ListTile {
                 String? ret;
                 String pattern = r"^[\p{L} ,.'-]*$";  
                 RegExp regex = RegExp(pattern, caseSensitive: false, unicode: true, dotAll: true);
-                if(!regex.hasMatch(value!))
+                if(!regex.hasMatch(value!) || value=='')
                   ret = 'Must be a string.';
                 return ret;
               },
@@ -431,7 +434,8 @@ class FormEmailTile extends ListTile {
                 RegExp regex = RegExp(pattern, caseSensitive: false, unicode: true, dotAll: true);
                 if(!regex.hasMatch(value!))
                   ret = 'Enter a valid email address';
-                return ret;
+                 return ret;
+    
               },
                keyboardType: TextInputType.text,
               decoration: InputDecoration(
@@ -478,7 +482,7 @@ class FormDoctTile extends ListTile {
                 String? ret;
                 String pattern =r"^[\p{L} ,.'-]*$";
                 RegExp regex = RegExp(pattern, caseSensitive: false, unicode: true, dotAll: true);
-                if(!regex.hasMatch(value!))
+                if(!regex.hasMatch(value!) || value=='')
                   ret = 'Enter a valid name';
                 return ret;
               },
@@ -534,6 +538,13 @@ class FormPswTile extends ListTile {
                   SpecialCharacterValidationRule(),
                   MinCharactersValidationRule(8),
                 },
+               validator: (value) {
+                String? ret;
+                if(_passwordController.areAllRulesValidated!=true || value=='')
+                ret= 'Must enter a valid pasword';
+                return ret;
+              
+              },
                  strengthIndicatorBuilder: (strength) {
             return Padding(
               padding: const EdgeInsets.symmetric(vertical: 8),

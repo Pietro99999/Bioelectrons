@@ -2,6 +2,7 @@ import 'package:applab/models/doctor.dart';
 import 'package:applab/models/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/signin_doctor.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
@@ -85,11 +86,28 @@ class _LoginPageState extends State<LoginPage>{
                           )),
                           )
                           ),
+                          Positioned(
+                        top:100,
+                        left: 90,
+                        child: Text('Coke Free',style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w800,
+                        color: Colors.white,
+                        fontSize: 51,))),
+                        Positioned(
+                        top:165,
+                        left: 75,
+                        child: Text('Doctor\'s ally against cocaine abuse',style: TextStyle(
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w400,
+                        color: Colors.white.withOpacity(0.9),
+                        fontSize: 16,))),
                     Positioned(
                         top:200,
                         left: 120,
                         child: Text('Login Page',style: TextStyle(
-                        fontStyle: FontStyle.normal,
+                        fontStyle: FontStyle.italic,
+                        fontWeight: FontWeight.w300,
                         color: Colors.white,
                         fontSize: 31,)))
                       ]
@@ -97,6 +115,7 @@ class _LoginPageState extends State<LoginPage>{
             ClipPath(
              clipper: OvalBottomBorderClipper(),
               child: Container(height:50,
+             
               color:  Color.fromRGBO(36, 208, 220, 1),
             ),
             ),
@@ -141,13 +160,19 @@ class _LoginPageState extends State<LoginPage>{
                     Doctordatabase element= listanow[i]; //controllo ogni elemento del database dottori
                     print(listanow[i] );
                     if (ind==0){
+                      print("Accesso non consentito ");
                       ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
+                    ..showSnackBar(SnackBar(
+                    content: Text( 
+                      textAlign: TextAlign.center,'Wrong email/password', 
+                      style: TextStyle(color: Color.fromARGB(255, 219, 22, 8),fontWeight:FontWeight.bold, fontSize: 16)),
+                     backgroundColor:  Color.fromRGBO(36, 208, 220, 1),)
+                      );
                     }
 
                     if (userController.text == element.email && passwordController.text== element.password){ //controllo che sia già presente nel database
-                      print("ciao");
+                      print("Accesso Consentito");
                       final sharedPreferences = await SharedPreferences.getInstance();
                       await sharedPreferences.setString('USERNAMELOGGED', element.surname);
 
@@ -165,15 +190,22 @@ class _LoginPageState extends State<LoginPage>{
                       Navigator.pushReplacement(
                         context, MaterialPageRoute(builder: (_) => HomePage()));
                     }
-                   /* else{
+                    /*
+                   if(userController.text != element.email && passwordController.text!= element.password){
+                    print("Accesso non consentito ");
                       ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
+                    ..showSnackBar(SnackBar(
+                    content: Text( 
+                      textAlign: TextAlign.center,'Wrong email/password', 
+                      style: TextStyle(color: Color.fromARGB(255, 219, 22, 8),fontWeight:FontWeight.bold, fontSize: 16)),
+                     backgroundColor:  Color.fromRGBO(36, 208, 220, 1), )
+                      );
                     }*/
                   }
-               //   ScaffoldMessenger.of(context)
-                 //   ..removeCurrentSnackBar();
-                 //   ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
+                // ScaffoldMessenger.of(context)
+                 //  ..removeCurrentSnackBar();
+                 // ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
                 
                 },
                 style: ButtonStyle(
@@ -204,9 +236,19 @@ class _LoginPageState extends State<LoginPage>{
             ),
 
            SizedBox(
-              height: 50,
+              height: 20,
             ),
-           Text('If you don\'t have an account yet please sign up'),
+  RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'If you don\'t have an account yet please ',
+                    style: const TextStyle(fontSize:17,color: Color.fromRGBO(36, 208, 220, 1),), 
+                    children:  <TextSpan>[ 
+                    TextSpan(text:'SIGN UP', style: TextStyle(fontWeight: FontWeight.bold) ),
+               ],
+              ),
+           ),
+           
            SizedBox(
               height: 10,
             ),
@@ -241,6 +283,13 @@ class _LoginPageState extends State<LoginPage>{
 
               ),
           ),
+          SizedBox(height:40),
+          Center(
+                   child:Image.asset('assets/logo2.png',scale:3.5,),
+                    ),
+          SizedBox(height:8),
+          Text('from BIOELECTRONS',style:TextStyle( color:Color.fromARGB(255, 120, 144, 144), fontSize: 12,),),      
+              
               
               
           ],
