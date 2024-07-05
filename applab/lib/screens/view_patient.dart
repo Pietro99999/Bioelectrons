@@ -14,14 +14,22 @@ import 'package:applab/utils/button.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:applab/models/indexlistona.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 
-
-class PatientHome extends StatelessWidget {
+class PatientHome extends StatefulWidget {
    final int patientIndex;
    final ButtonErrorDemo button;
    final ModifyPatient modpat;
    final String day = '2023-04-27'; 
+   PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
+ 
+  @override
+
+  _PatientHomeState createState() => _PatientHomeState();
+
+ }
+  
 //GIORNI INTERESSANTI:
 //2024-04-23 i dati sleep richiedono [0] e dorme poco perchè va a letto a mezzanotte (348 minuti)
 //2024/04/26 due eventi ma uno breve. UN EVENTO SEGNALATO    BELLO COME SEMPIO
@@ -34,17 +42,21 @@ class PatientHome extends StatelessWidget {
 //2023-04-27 è andato a letto dopo mezzanotte. UN EVENTO
 
   //PatientPage constructor
-  PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
-
-  static const routeDisplayName = 'PatientPage';
+  //PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
+  class _PatientHomeState extends State<PatientHome> {
+    final String day = '2023-04-27'; 
+    CalendarFormat _calendarFormat = CalendarFormat.month;
+    DateTime _focusedDay = DateTime.now();
+    DateTime? _selectedDay;
+  //static const routeDisplayName = 'PatientPage';
  @override
   Widget build(BuildContext context) {
-    print('${PatientHome.routeDisplayName} built');
+   // print('${PatientHome.routeDisplayName} built');
     return Scaffold(
       appBar: AppBar(
          backgroundColor:   Color.fromARGB(195, 89, 192, 213),
         centerTitle: true,
-        title: Text('Patient: ${modpat.newPatient[patientIndex].patients}',
+        title: Text('Patient: ${widget.modpat.newPatient[widget.patientIndex].patients}',
         style: TextStyle(
                         color:  Colors.white,
                         fontStyle: FontStyle.italic,
@@ -59,18 +71,20 @@ class PatientHome extends StatelessWidget {
                         fontSize: 15.0,                       
                 ),
                 ),
-        onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPage(modpat: modpat, patientIndex: patientIndex,button: button)));},
+        onPressed: () { Navigator.push(context, MaterialPageRoute(builder: (context) => PatientPage(modpat: widget.modpat, patientIndex: widget.patientIndex,button: widget.button)));},
       )],
         ),
-      body: ListView(
+      body:// Example spacing
+      SingleChildScrollView(
         padding: EdgeInsets.zero,
-        children:<Widget>[
+        child:
+          Column(children: [
            Stack(
             clipBehavior: Clip.none,
             alignment: Alignment.center,
             children: [
               Container(
-                color:  modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 131, 229, 248).withOpacity(0.6):Color.fromARGB(240, 250, 185, 241).withOpacity(0.6),
+                color:  widget.modpat.newPatient[widget.patientIndex].sex == false ? Color.fromARGB(195, 131, 229, 248).withOpacity(0.6):Color.fromARGB(240, 250, 185, 241).withOpacity(0.6),
                 height: 180,
                 width: double.infinity,
               ),
@@ -81,7 +95,7 @@ class PatientHome extends StatelessWidget {
                   backgroundColor:
                       Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
                   backgroundImage: AssetImage(
-                      modpat.newPatient[patientIndex].sex == false
+                      widget.modpat.newPatient[widget.patientIndex].sex == false
                           ? 'assets/m.png'
                           : 'assets/w.png'),
                 ),
@@ -94,12 +108,14 @@ class PatientHome extends StatelessWidget {
       children: [
                   const SizedBox(height:40),
                   
-                  Text('${modpat.newPatient[patientIndex].patients}',  style: TextStyle(fontSize: 22,color: modpat.newPatient[patientIndex].sex == false ? Color.fromARGB(195, 13, 194, 231).withOpacity(0.6):Color.fromARGB(239, 208, 17, 183).withOpacity(0.6), fontWeight: FontWeight.bold ),), 
+                  Text('${widget.modpat.newPatient[widget.patientIndex].patients}',  style: TextStyle(fontSize: 22,color: widget.modpat.newPatient[widget.patientIndex].sex == false ? Color.fromARGB(195, 13, 194, 231).withOpacity(0.6):Color.fromARGB(239, 208, 17, 183).withOpacity(0.6), fontWeight: FontWeight.bold ),), 
+                
+                  
                   SizedBox(
           height:25,
         ),
                   Card(
-      color: modpat.newPatient[patientIndex].grav=='Low'? const Color.fromARGB(255, 91, 210, 95):modpat.newPatient[patientIndex].grav=='Medium'? Colors.orange:Colors.red,
+      color: widget.modpat.newPatient[widget.patientIndex].grav=='Low'? const Color.fromARGB(255, 91, 210, 95):widget.modpat.newPatient[widget.patientIndex].grav=='Medium'? Colors.orange:Colors.red,
       child: Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
@@ -111,7 +127,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Severity: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].grav }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].grav }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),],
@@ -123,7 +139,7 @@ class PatientHome extends StatelessWidget {
           height:25,
         ),
         Card(
-           color: modpat.newPatient[patientIndex].sex== false ? Color.fromARGB(195, 131, 229, 248).withOpacity(0.6):Color.fromARGB(240, 250, 185, 241).withOpacity(0.6),
+           color: widget.modpat.newPatient[widget.patientIndex].sex== false ? Color.fromARGB(195, 131, 229, 248).withOpacity(0.6):Color.fromARGB(240, 250, 185, 241).withOpacity(0.6),
       child: Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
@@ -135,7 +151,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Age: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].age}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].age}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -146,7 +162,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Height: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].height}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].height}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -156,7 +172,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Weight: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].weight} ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].weight} ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -167,7 +183,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Sex: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].sex == false ? 'Male' : 'Female'}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].sex == false ? 'Male' : 'Female'}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -177,7 +193,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Starting year of coke assumption: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].year}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].year}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -189,7 +205,7 @@ class PatientHome extends StatelessWidget {
                     text: 'Patient under treatment: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].treatm }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].treatm }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -204,10 +220,13 @@ class PatientHome extends StatelessWidget {
                     text: 'Patient treatment: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${modpat.newPatient[patientIndex].drug }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].drug }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
+          
+            
+           
            ],
         ),
         )
@@ -219,9 +238,59 @@ class PatientHome extends StatelessWidget {
       
       ),
      ),
+    Container(padding: EdgeInsets.all(10),
+          decoration: BoxDecoration(
+            border: Border.all(color: Colors.blue, width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          width: 350, // Adjust the width
+          height: 450, // Adjust the height
+    
+      child: 
+  TableCalendar(calendarFormat: _calendarFormat, focusedDay: _focusedDay, firstDay: DateTime.utc(2010, 10,16), lastDay: DateTime.utc(2030,3,14),
+            selectedDayPredicate: (day) {
+              // Use `selectedDayPredicate` to determine which day is currently selected.
+              return isSameDay(_selectedDay, day);
+            },
+            
+            onFormatChanged: (format) {
+              setState(() {
+                  _calendarFormat = format;
+                });
+            },
+            onDaySelected: (selectedDay, focusedDay) async{
+              setState((){
+                 _selectedDay = selectedDay;
+                  _focusedDay = focusedDay; 
+                  
+              }
+              );
+              print('Selected day: $_selectedDay');
+              if (_selectedDay!=null){  
+              String format1 = DateFormat('yyyy-MM-dd').format(_selectedDay!);// update `_focusedDay` as well
+              print(format1);
+            }
+            
+              },
 
+            
+            
+          onPageChanged: (focusedDay) {
+              _focusedDay = focusedDay;
+            },
+  
+           
+            ),
+    
+    ),
         ],
       ),
+      ),
+   
+       
+      
+      
+      
 
 
       floatingActionButton: FloatingActionButton(
