@@ -154,22 +154,28 @@ class _LoginPageState extends State<LoginPage>{
                 onPressed: () async{
                   List<dynamic> listanow= _getUsers();
                  int ind = listanow.length;
+
+                   if (ind==0){
+                      // No users in the database
+                      ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(
+                    content: Text( 
+                     'Wrong email/password', 
+                      textAlign: TextAlign.center,
+                      style: TextStyle(color: Color.fromARGB(255, 219, 22, 8),fontWeight:FontWeight.bold, fontSize: 16)),
+                     backgroundColor:  Color.fromRGBO(36, 208, 220, 1),)
+                      );
+                    }
+
+                    bool access=false;
+
                   for (var i = 0; i< ind; i++ ){
                     //Doctor element = listaaa.doctors[i];
                     
                     Doctordatabase element= listanow[i]; //controllo ogni elemento del database dottori
                     print(listanow[i] );
-                    if (ind==0){
-                      print("Accesso non consentito ");
-                      ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(
-                    content: Text( 
-                      textAlign: TextAlign.center,'Wrong email/password', 
-                      style: TextStyle(color: Color.fromARGB(255, 219, 22, 8),fontWeight:FontWeight.bold, fontSize: 16)),
-                     backgroundColor:  Color.fromRGBO(36, 208, 220, 1),)
-                      );
-                    }
+                  
 
                     if (userController.text == element.email && passwordController.text== element.password){ //controllo che sia già presente nel database
                       print("Accesso Consentito");
@@ -184,30 +190,36 @@ class _LoginPageState extends State<LoginPage>{
                         if(paziente.doctorname == element.surname){//il dottore ha già un databse
                           Patients pazientegiaiscritto = Patients(patients: paziente.patients, age: paziente.age, weight: paziente.weight, height: paziente.height,sex:paziente.sex, year:paziente.year, grav : paziente.grav, treatm: paziente.treatm, drug: paziente.drug);
                           listaprovvisoria.add(pazientegiaiscritto);
-                        }
+                         }
                       }
+
                       (Provider.of<ModifyPatient>(context, listen: false)).newPatient=listaprovvisoria;
                       Navigator.pushReplacement(
                         context, MaterialPageRoute(builder: (_) => HomePage()));
+                        access= true;
+                       break;
+         
                     }
-                    /*
-                   if(userController.text != element.email && passwordController.text!= element.password){
-                    print("Accesso non consentito ");
-                      ScaffoldMessenger.of(context)
+                  
+                  }
+                     
+                 // If wrong mail or password error
+                    
+                  if(access!=true){
+  
+                   ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(
                     content: Text( 
                       textAlign: TextAlign.center,'Wrong email/password', 
                       style: TextStyle(color: Color.fromARGB(255, 219, 22, 8),fontWeight:FontWeight.bold, fontSize: 16)),
                      backgroundColor:  Color.fromRGBO(36, 208, 220, 1), )
-                      );
-                    }*/
+                     );
                   }
-                // ScaffoldMessenger.of(context)
-                 //  ..removeCurrentSnackBar();
-                 // ..showSnackBar(SnackBar(content: Text('Wrong email/password')));
                 
                 },
+
+                
                 style: ButtonStyle(
                    backgroundColor: MaterialStateProperty.all(Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),),
                   

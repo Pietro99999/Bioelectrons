@@ -175,7 +175,14 @@ class _SignInDoctorState extends State<SignInDoctor>{
         bool emailExists = box.values.any((doctor) => doctor.email == _emailDoctor.text);
       if(emailExists){
             ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('The mail is already registered')));
+            SnackBar(content: 
+            Text('The mail is already registered',
+             textAlign: TextAlign.center,
+            style: TextStyle(
+              color: Color.fromARGB(255, 219, 22, 8),
+              fontWeight:FontWeight.bold, 
+              fontSize: 16),),
+             backgroundColor:  Color.fromRGBO(36, 208, 220, 1),),);
       }else{
 
        if (formKey.currentState!.validate()){
@@ -183,6 +190,8 @@ class _SignInDoctorState extends State<SignInDoctor>{
           //widget.listDoctor.addDoctor(newDoctor);
             var newDoct= Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
             var box= await Hive.openBox<Doctordatabase>('doctors');
+            box.add(newDoct);
+            print('Elemento aggiunto');
          
 
        //widget.listDoctor.addDoctor(newDoctor);
