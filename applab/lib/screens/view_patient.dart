@@ -21,7 +21,7 @@ class PatientHome extends StatefulWidget {
    final int patientIndex;
    final ButtonErrorDemo button;
    final ModifyPatient modpat;
-   final String day = '2023-04-27'; 
+   //String day = '2023-08-15'; 
    PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
  
   @override
@@ -44,7 +44,7 @@ class PatientHome extends StatefulWidget {
   //PatientPage constructor
   //PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
   class _PatientHomeState extends State<PatientHome> {
-    final String day = '2023-04-27'; 
+    String day = ''; 
     CalendarFormat _calendarFormat = CalendarFormat.month;
     DateTime _focusedDay = DateTime.now();
     DateTime? _selectedDay;
@@ -169,7 +169,7 @@ class PatientHome extends StatefulWidget {
                     text: 'Height: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].height}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].height} cm', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -179,7 +179,7 @@ class PatientHome extends StatefulWidget {
                     text: 'Weight: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].weight} ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].weight} Kg', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -273,9 +273,13 @@ class PatientHome extends StatefulWidget {
               }
               );
               print('Selected day: $_selectedDay');
+             
               if (_selectedDay!=null){  
               String format1 = DateFormat('yyyy-MM-dd').format(_selectedDay!);// update `_focusedDay` as well
-              print(format1);
+              print('format1 $format1');
+              day= format1; 
+              print('day $day');
+              
             }
             
               },
@@ -311,11 +315,11 @@ class PatientHome extends StatefulWidget {
         onPressed: () async {
                   final result = await _authorize();
                   print(result);
-                  final message = result == null ? 'Authorize failed' : 'Authorize successful';
+                  /*final message = result == null ? 'Authorize failed' : 'Authorize successful';
                   ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message)));
-                   
+                    ..showSnackBar(SnackBar(content: Text(message)));*/
+                  
                   final calories = await _requestCal();     
                   final hr = await _requestHR();
                   final sleep = await _requestSleep(); 
@@ -324,9 +328,9 @@ class PatientHome extends StatefulWidget {
                   final valCal = _splitVal(calories);
                   final timeHr = _splitTime(hr);
                   final valHr = _splitVal(hr);
-                   ScaffoldMessenger.of(context)
+                   /*ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message1))); 
+                    ..showSnackBar(SnackBar(content: Text(message1))); */
                   //DATA ELABORATION
                   num sumCal =0;
                   for (int i=0; i<timeCal!.length; i++){                 
@@ -353,8 +357,9 @@ class PatientHome extends StatefulWidget {
                     }else{
                       print('è andato a letto dopo mezzanotte quindi non ho minuti da sommare');
                     }//else
-                  }//if                  
-
+                  }//if  
+                  
+                  if(day!=''){
                   if ((sumCal!=0)&&(valHr?[0]!=0)&&(sleep?[0]!=0)){
                   List listona = [];
                   List<int> indici = [];
@@ -417,8 +422,13 @@ class PatientHome extends StatefulWidget {
                      String messaggio = 'For the selected day there is not enough data available to provide an accurate answer';
                      ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(messaggio)));                   
+                    ..showSnackBar(SnackBar(content: Text(messaggio), backgroundColor: Color.fromARGB(255, 239, 120, 112)));                   
                   }//se non abbiamo dati sufficienti 
+                  }else{
+                    ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text('Select a date'), backgroundColor: Color.fromARGB(255, 239, 120, 112)));
+                  }
                 },//build
     ),
     floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
