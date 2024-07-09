@@ -21,7 +21,7 @@ import 'package:table_calendar/table_calendar.dart';
   final num calories;
   final num sleeping;
   
- // IndexListona classeprova;
+ 
   
   Data({required this.day, required this.timeCal, required this.valCal, required this.timeHr, required this.valHr, required this.sleep, required this.listona, required this.times, required this.data, required this.calories, required this.sleeping,});
 
@@ -75,8 +75,6 @@ import 'package:table_calendar/table_calendar.dart';
                        color: Color.fromRGBO(36, 208, 220, 1),
                        padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 60),
                     ),
-                   // Padding(padding: const EdgeInsets.all(8.0),
-                   // ),
                   ],
                   ),
                   SizedBox(
@@ -87,10 +85,10 @@ import 'package:table_calendar/table_calendar.dart';
                   child: ColorChangingCard(number: times),
                     ),
                      Divider(
-              color: Colors.black.withOpacity(0.5), // Optional: Customize the color
-              thickness: 2, // Optional: Customize the thickness
-              indent: 5, // Optional: Customize the indent from the left
-              endIndent: 5, // Optional: Customize the indent from the right
+              color: Colors.black.withOpacity(0.5), 
+              thickness: 2, 
+              indent: 5,
+              endIndent: 5,
             ),
                   SizedBox(height: 30),
                   Text('DATA SUMMARY', style: TextStyle(fontSize: 20, color: Colors.black, fontWeight:FontWeight.bold ),),
@@ -195,8 +193,6 @@ import 'package:table_calendar/table_calendar.dart';
                    return Padding(padding: const EdgeInsets.all(8.0),
                    child: Chart(
                     rebuild:true,
-                   // List.generate(10000, (index)
-                   //listona[(Provider.of<IndexListona>(context, listen: false)).i]
           data:  List.generate((listona[(Provider.of<IndexListona>(context, listen: false)).i]).length, (index)=> {
             'category': timeHr?[index + Provider.of<IndexListona>(context,listen:false).primoindice],
             'value': valHr?[index+Provider.of<IndexListona>(context,listen:false).primoindice],
@@ -491,20 +487,3 @@ String transformMinutesToHours(num totalMinutes) {
   return '$hours h $minutes min';
 }
 
-/*String getDayOfMonthSuffix(int day) {
-  if (!(day >= 1 && day <= 31)) {
-    throw Exception('Invalid day of month');
-  }
-  if (day >= 11 && day <= 13) {
-    return 'th';
-  }
-  switch (day % 10) {
-    case 1:
-      return 'st';
-    case 2:
-      return 'nd';
-    case 3:
-      return 'rd';
-    default:
-      return 'th';
-  }*/

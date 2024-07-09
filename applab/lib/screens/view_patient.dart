@@ -31,6 +31,14 @@ class PatientHome extends StatefulWidget {
  }
   
 //GIORNI INTERESSANTI:
+//GIORNI INTERESSANTI:
+//10/06/2024 DUE EVENTI
+//21/06/2024 UN EVENTO
+//07/07/2024 CI SAREBBE UN EVENTO MA TROPPO BREVE
+//29/05 /24 UN EVENTO
+//
+//
+
 //2024-04-23 i dati sleep richiedono [0] e dorme poco perchè va a letto a mezzanotte (348 minuti)
 //2024/04/26 due eventi ma uno breve. UN EVENTO SEGNALATO    BELLO COME SEMPIO
 //2024/04/28 no eventi
@@ -41,8 +49,7 @@ class PatientHome extends StatefulWidget {
 //2023/08/15 NO dati sleep
 //2023-04-27 è andato a letto dopo mezzanotte. UN EVENTO
 
-  //PatientPage constructor
-  //PatientHome({Key? key, required this.modpat, required this.patientIndex,required this.button}) : super(key: key);
+  
   class _PatientHomeState extends State<PatientHome> {
     String day = ''; 
     CalendarFormat _calendarFormat = CalendarFormat.month;
@@ -51,7 +58,6 @@ class PatientHome extends StatefulWidget {
     
     
     
-  //static const routeDisplayName = 'PatientPage';
  @override
   Widget build(BuildContext context) {
     String? text = _getText(); 
@@ -298,7 +304,7 @@ class PatientHome extends StatefulWidget {
                     ..showSnackBar(SnackBar(content: Text(message)));*/
                   
                   final calories = await _requestCal(); 
-                  final exercise = _requestExe();    
+                  final exercise = await _requestExe();    
                   final hr = await _requestHR();
                   final sleep = await _requestSleep(); 
                   final message1 = calories == null ? 'Request failed' : 'Request successful';
@@ -308,9 +314,7 @@ class PatientHome extends StatefulWidget {
                   final valHr = _splitVal(hr);
 
                   
-                   /*ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message1))); */
+                  
                   //DATA ELABORATION
                   num sumCal =0;
                   for (int i=0; i<timeCal!.length; i++){                 
@@ -362,6 +366,8 @@ class PatientHome extends StatefulWidget {
                   }//if sleep
                   }//if calories
                   print('lunghezza listona = ${listona.length}');     
+
+
                   //se i periodi in cui hr>140 sono più vicini di 1 ora (720 campioni) 
                   //tra loro allora voglio che vengano considerati come un singolo evento             
                   for (int i=(listona.length-1); i>0; i--){
@@ -372,6 +378,51 @@ class PatientHome extends StatefulWidget {
                   };//for
                   print('unisco gli eventi ravvicinati:');
                   print('lunghezza new listona = ${listona.length}');
+
+
+
+                   //se i periodi coincidono con l'allenamento li elimino. Gli allenamenti e i probabili eventi di 
+                  // di droga devono distare almeno 120 minuti di differenza. Se non è così, il picco dei battiti è attività fisica!
+                  List listatoremove =[];
+                  if (exercise!=null){  
+                  for (int i=0; i<listona.length; i++){
+                    bool remove= false;
+                    print(i);
+                    String tempolista= timeHr?[listona[i][0]];
+                    for (int k=0; k< exercise.length; k++){ 
+                      //print(exercise[k]);
+                     if (exercise[k] != '0'){ 
+                      DateFormat format = DateFormat("HH:mm:ss");
+                      DateTime tempi = format.parse(tempolista);
+                      DateTime allenamento=format.parse(exercise[k]);
+                      print('evento segnalato a ora $tempi');
+                      print('allenamento è stato rilevato alle $allenamento');
+                      Duration differenza = (tempi).difference(allenamento);
+                    if ((differenza.inMinutes).abs()<120){
+                      print('La differenza da allenamento è ${differenza.inMinutes.abs()} min');
+                    remove=true;
+                      
+                    };
+                     }
+                     else{
+                      continue;
+                     }
+                     
+                    }
+                    if (remove==true){
+                      listatoremove.add(i);
+                    }
+                  }
+                  }
+                  
+                  for (int i=listatoremove.length-1; i>=0; i--){
+                    listona.removeAt(listatoremove[i]);
+                  }
+                  print('new lunghezza listona ${listona.length}, togliamo allenamento');
+
+
+
+
                   //se un evento non è vicino ad altri eventi ed è di durata
                   //inferiore ai 15 minuti (15*12=180) lo elimino da listona perchè
                   //può essere dovuto a cause non legate all'assunzione di cocaina 
@@ -431,147 +482,12 @@ class PatientHome extends StatefulWidget {
         ],
       ),
       ),
-   
-       
-      
-      
-      
-
-
-    /*  floatingActionButton: FloatingActionButton(
-        
-        backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
-        child: Text('DATA', 
-        style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 15.0,                       
-                ),),
-        onPressed: () async {
-                  final result = await _authorize();
-                  print(result);
-                  /*final message = result == null ? 'Authorize failed' : 'Authorize successful';
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message)));*/
-                  
-                  final calories = await _requestCal();     
-                  final hr = await _requestHR();
-                  final sleep = await _requestSleep(); 
-                  final message1 = calories == null ? 'Request failed' : 'Request successful';
-                  final timeCal = _splitTime(calories);
-                  final valCal = _splitVal(calories);
-                  final timeHr = _splitTime(hr);
-                  final valHr = _splitVal(hr);
-                   /*ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message1))); */
-                  //DATA ELABORATION
-                  num sumCal =0;
-                  for (int i=0; i<timeCal!.length; i++){                 
-                    double valore = double.parse(valCal?[i]);
-                    sumCal = sumCal+valore;
-                  }//for
-                  print('sumCal = $sumCal');
-
-                  if(sleep?[3]!=0){
-                    String midnight_string = '24:00:00';
-                    String newString = sleep?[3].substring(6);
-                    DateFormat format = DateFormat("HH:mm:ss");
-                    DateTime midnight = format.parse(midnight_string);
-                    DateTime dateTime = format.parse(newString);
-                    print('midnight $midnight');
-                    print('new DateTime $dateTime');
-                    Duration difference = midnight.difference(dateTime);
-                    print('duration = $difference');
-                    if(difference<Duration(hours: 5)){
-                    int inMinutes = difference.inMinutes;
-                    print('difference in minutes = $inMinutes');
-                    sleep?[0]=sleep?[0]+inMinutes; //totale minuti dormiti quella notte
-                    print('new sleep = $sleep');
-                    }else{
-                      print('è andato a letto dopo mezzanotte quindi non ho minuti da sommare');
-                    }//else
-                  }//if  
-                  
-                  if(day!=''){
-                  if ((sumCal!=0)&&(valHr?[0]!=0)&&(sleep?[0]!=0)){
-                  List listona = [];
-                  List<int> indici = [];
-                  bool droga = false;
-                  if (sumCal>2500){ //first trigger VALORE APPOSITAMENTE BASSO
-                  if (sleep?[0]<1000){ //second trigger VALORE APPOSITAMENTE ELEVATO
-                    for (int i=0; i<timeHr!.length; i++ ){
-                      if (valHr?[i]>140){ //third trigger
-                        droga=true;
-                        indici.add(i);
-                      }//if hr>140
-                      else{
-                        if(droga==true){
-                          listona.add(indici);                          
-                          indici = [];//svuoto la lista indici 
-                          droga=false;
-                        }//if droga==true
-                      }//else hr>140
-                    };//for
-                  }//if sleep
-                  }//if calories
-                  print('lunghezza listona = ${listona.length}');     
-                  //se i periodi in cui hr>140 sono più vicini di 1 ora (720 campioni) 
-                  //tra loro allora voglio che vengano considerati come un singolo evento             
-                  for (int i=(listona.length-1); i>0; i--){
-                    if ((listona[i][0]-listona[i-1][listona[i-1].length-1])<720){ //720=12*60
-                      listona[i-1].addAll(listona[i]);
-                      listona.removeAt(i);
-                    };//if
-                  };//for
-                  print('unisco gli eventi ravvicinati:');
-                  print('lunghezza new listona = ${listona.length}');
-                  //se un evento non è vicino ad altri eventi ed è di durata
-                  //inferiore ai 15 minuti (15*12=180) lo elimino da listona perchè
-                  //può essere dovuto a cause non legate all'assunzione di cocaina 
-                  for (int i=(listona.length-1); i>=0; i--){
-                    if (listona[i].length<30){
-                      listona.removeAt(i);                      
-                    };//if
-                  };//for
-                  print ('elimino gli eventi isolati e di breve durata:');
-                  print('lunghezza new listona = ${listona.length}');
-                  print('new listona $listona');
-
-                  listona = _addBefore(listona);
-                  listona = _addAfter(listona);
-                  //print('listona add = $listona');
-                   int lunghezza= listona.length;
-                  int primoindice; 
-                  if (lunghezza != 0){
-                    
-                    int firstindex= (listona[(Provider.of<IndexListona>(context, listen: false)).i])[0];
-                    Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
-                  }
-                  else{
-                    int firstindex= -1 ;
-                    Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
-
-                  }
-                  print(Provider.of<IndexListona>(context,listen:false).primoindice);
-                   Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep, listona: listona, times: lunghezza, data: day, calories: sumCal.floor(), sleeping:sleep?[0])));
-                  }//se abbiamo tutti i dati
-                  else{
-                     String messaggio = 'For the selected day there is not enough data available to provide an accurate answer';
-                     ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(messaggio), backgroundColor: Color.fromARGB(255, 239, 120, 112)));                   
-                  }//se non abbiamo dati sufficienti 
-                  }else{
-                    ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text('Select a date'), backgroundColor: Color.fromARGB(255, 239, 120, 112)));
-                  }
-                },//build
-    ),
-    */ //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+  
     );
   }//widget
+
+
+//FUNCTIONS TO REQUIRED DATA
   
 Future<List?> _requestCal() async {
    
@@ -781,6 +697,8 @@ return (text);
 
 
 
+
+//FUNCTION TO HAVE READABLE DATA 
 
 List? _splitTime(List? lista){
   List? time = [];

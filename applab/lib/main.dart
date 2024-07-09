@@ -64,9 +64,5 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         home: SplashScreen(),
       ),);
-   // return MaterialApp(
-      //This specifies the app entrypoint
-      //home: SplashScreen(),
-    //);
   } //build
 }//MyApp
