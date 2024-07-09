@@ -48,11 +48,16 @@ class PatientHome extends StatefulWidget {
     CalendarFormat _calendarFormat = CalendarFormat.month;
     DateTime _focusedDay = DateTime.now();
     DateTime? _selectedDay;
-    String text = ''; 
+    
+    
     
   //static const routeDisplayName = 'PatientPage';
  @override
   Widget build(BuildContext context) {
+    String? text = _getText(); 
+    String? treatment = widget.modpat.newPatient[widget.patientIndex].drug.toString(); 
+    treatment= treatment.replaceAll('[', '').replaceAll(']', '');
+    //String treatment = trattamento.replaceAll('[', '').replaceAll(']', '');
    // print('${PatientHome.routeDisplayName} built');
     return Scaffold(
       appBar: AppBar(
@@ -224,10 +229,10 @@ class PatientHome extends StatefulWidget {
               RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                    text: 'Patient treatment: ',
+                    text: text,
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].drug }  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '$treatment'/*'${widget.modpat.newPatient[widget.patientIndex].drug }  '*/, style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -277,6 +282,7 @@ class PatientHome extends StatefulWidget {
                   
               }
               );
+                        
               print('Selected day: $_selectedDay');
              
               if (_selectedDay!=null){  
@@ -300,6 +306,7 @@ class PatientHome extends StatefulWidget {
                   final valCal = _splitVal(calories);
                   final timeHr = _splitTime(hr);
                   final valHr = _splitVal(hr);
+
                   
                    /*ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
@@ -757,17 +764,16 @@ Future<List?> _requestSleep() async {
     print('sleep= $result');
     return result;  } //_requestSleep
 
-    String? _getText(){
+String? _getText(){
   String text ='';
   print ('In trattamento: ${widget.modpat.newPatient[widget.patientIndex].treatm}');
-  if ('${widget.modpat.newPatient[widget.patientIndex].treatm}'=='a'){
-    text = widget.modpat.newPatient[widget.patientIndex].treatm; 
-
+  if ('${widget.modpat.newPatient[widget.patientIndex].treatm}'=='No'){
+    text = 'Recommended treatment: '; 
   }else{
-
+    text = 'Patient treatment: ';
   }
 
-return text;
+return (text);
 }
 
 
