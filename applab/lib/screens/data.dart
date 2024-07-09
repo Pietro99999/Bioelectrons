@@ -4,6 +4,7 @@ import 'package:graphic/graphic.dart';
 import 'package:provider/provider.dart';
 import 'package:applab/models/indexlistona.dart';
 import 'package:intl/intl.dart';
+import 'package:table_calendar/table_calendar.dart';
 
 
  class Data extends StatelessWidget{
@@ -16,7 +17,7 @@ import 'package:intl/intl.dart';
   final String? day; 
   final List listona;
   final int times;
-  final String data;
+  final DateTime? data;
   final num calories;
   final num sleeping;
   
@@ -28,14 +29,11 @@ import 'package:intl/intl.dart';
   @override
   Widget build(BuildContext context) {   
   
-    print(times);
-    int rpr = Provider.of<IndexListona>(context, listen: false).i;
-    print(rpr);
     
     return Scaffold(
       appBar: AppBar (
         centerTitle: true,
-        title: Text('View Data',
+        title: Text('VIEW DAY',
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: 30.0,
@@ -57,42 +55,55 @@ import 'package:intl/intl.dart';
                 crossAxisAlignment: CrossAxisAlignment.start,
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(
-                    height: 2,
-                  ),
+                 
                   //DATA 
-                  Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  Row(mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Padding(padding: const EdgeInsets.all(8.0),
-                    child: InkWell( 
-                      onTap: (){},
-                      child: const Icon(Icons.calendar_month,
-            
-                      ),
-                    ),
-                    ),
-                    Text(data,
+                     //Padding(padding: const EdgeInsets.all(8.0),
+                 //   ),
+                    coloredPadding(//padding: const EdgeInsets.all(8.0),
+                    child: 
+                     
+                    Text(formatDate(data),
                      style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 25.0,
-                        //fontWeight:FontWeight.bold,
+                        fontWeight:FontWeight.bold
+                        
+                       
                        ),),
-                    
-                    Padding(padding: const EdgeInsets.all(8.0),
+                       color: Color.fromRGBO(36, 208, 220, 1),
+                       padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 60),
                     ),
+                   // Padding(padding: const EdgeInsets.all(8.0),
+                   // ),
                   ],
                   ),
                   SizedBox(
-                    height: 20,
+                    height: 40,
                   ),
 
                   Padding(padding: const EdgeInsets.all(8.0),
                   child: ColorChangingCard(number: times),
                     ),
-                  SizedBox(height: 20),
+                     Divider(
+              color: Colors.black.withOpacity(0.5), // Optional: Customize the color
+              thickness: 2, // Optional: Customize the thickness
+              indent: 5, // Optional: Customize the indent from the left
+              endIndent: 5, // Optional: Customize the indent from the right
+            ),
+                  SizedBox(height: 30),
+                  Text('DATA SUMMARY', style: TextStyle(fontSize: 20, color: Colors.black, fontWeight:FontWeight.bold ),),
                   Padding(padding: const EdgeInsets.all(8.0),
                   
                   ),
+                  Container(
+                    decoration: BoxDecoration(
+            border: Border.all(color: Colors.black.withOpacity(0.5), width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+                  child: Column(
+                    children: [  
                   Row(mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Padding(padding: const EdgeInsets.all(8.0),
@@ -104,7 +115,7 @@ import 'package:intl/intl.dart';
                         if (newindex<0 ){
                           ScaffoldMessenger.of(context)
                           ..removeCurrentSnackBar()
-                          ..showSnackBar(SnackBar(content: Text('No more data')));
+                          ..showSnackBar(SnackBar(content: Text('No more data to sho')));
 
                         }
                         else{
@@ -137,7 +148,7 @@ import 'package:intl/intl.dart';
                         if (newindex>=times ){
                           ScaffoldMessenger.of(context)
                           ..removeCurrentSnackBar()
-                          ..showSnackBar(SnackBar(content: Text('No more data')));
+                          ..showSnackBar(SnackBar(content: Text('No more data to show')));
 
                         }
                         else{
@@ -166,12 +177,12 @@ import 'package:intl/intl.dart';
                     return Padding(padding: const EdgeInsets.all(8.0),
                     child: Card(
                       elevation: 1,
-                        color:Color.fromARGB(195, 7, 121, 62),
+                        color:Colors.green.withOpacity(0.5),
                         child: 
                         Center(
-                          child: Text('No heart rate to show',
+                          child: Text('No critical event to show',
                           style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20.0,
                         fontWeight:FontWeight.bold,
                        )),
@@ -199,12 +210,7 @@ import 'package:intl/intl.dart';
               accessor: (Map map) => map['value'] as num,
             ),
           },
-          /*elements: [
-            IntervalElement(
-              elevation: Elevation(size: 5),
-              color: ColorAttr(variable: 'category', values: [Colors.blue, Colors.green, Colors.red, Colors.orange]),
-            ),
-          ],*/
+          
           marks: <Mark<Shape>>[
         LineMark(
           position: Varset('category') * Varset('value'),
@@ -212,17 +218,7 @@ import 'package:intl/intl.dart';
           size: SizeEncode(value: 2),
           //color:,
         ),
-        /*AreaMark(
-            gradient: GradientEncode(
-          value: LinearGradient(
-            begin: const Alignment(0, 0),
-            end: const Alignment(0, 1),
-            colors: [
-              const Color(0xFF326F5E).withOpacity(0.6),
-              const Color(0xFFFFFFFF).withOpacity(0.0),
-            ],
-          ),
-        ))*/  //riempio l'area sottesa dal grafico
+        
       ],
           axes: [
             Defaults.horizontalAxis,
@@ -241,39 +237,74 @@ import 'package:intl/intl.dart';
                   ),
                   
                     ),
-          Text('The above graph shows periods when heart rate reached 130. This could be significant related to drug assumption. Check motivation',
+                     Text('The above graph shows periods when heart rate exceeds the value of 130. \nThis could be significant related to coke assumption. Check motivation with the patient',
           style: TextStyle(
                         color: Colors.grey,
                         fontSize: 10.0,
                         fontWeight:FontWeight.bold,
                        ),
           textAlign: TextAlign.center,),
-          SizedBox(height: 60),
+          SizedBox(height: 10),
+                   ],
+                  ),
+            ),
+          SizedBox(height: 40),
+          Container(
+             decoration: BoxDecoration(
+            border: Border.all(color: Colors.black.withOpacity(0.5), width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+            child:
           Center(
             child: Column(
             children: [
+               SizedBox(height: 10),
             Text('Total day calories', 
             style: TextStyle(
                         color: Colors.black,
                         fontSize: 15.0,
                         fontWeight:FontWeight.bold,
                        )),
-            Caloriesdata(number: calories)
+            Caloriesdata(number: calories),
+            Text('The drug use can increase the consumed cal/day. Check motivation with the patient',
+             style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                        fontWeight:FontWeight.bold,
+                       ),
+          textAlign: TextAlign.center),
+           SizedBox(height: 10),
                        ],)
           ),
-           SizedBox(height: 60),
+            ),
+           SizedBox(height: 40),
+           Container( decoration: BoxDecoration(
+            border: Border.all(color: Colors.black.withOpacity(0.5), width: 2),
+            borderRadius: BorderRadius.circular(12),
+          ),
+          child:
           Center(
             child: Column(
             children: [
-            Text('Minutes asleep', 
+              SizedBox(height: 10),
+            Text('Hours asleep', 
             style: TextStyle(
                         color: Colors.black,
                         fontSize: 15.0,
                         fontWeight:FontWeight.bold,
                        )),
-            Sleepsdata(number: sleeping)
+            Sleepsdata(number: sleeping),
+            Text('The drug use can decrease the sleeping hours. Moreover, the patient under treatment should get at least 9h of sleeps. \nIn case of lack  with the patient',
+             style: TextStyle(
+                        color: Colors.grey,
+                        fontSize: 10.0,
+                        fontWeight:FontWeight.bold,
+                       ),
+          textAlign: TextAlign.center),
+          SizedBox(height: 10),
                        ],)
           )
+            ),
 
                 ],
               ),
@@ -283,86 +314,7 @@ import 'package:intl/intl.dart';
     );
 
 
-    //final categories = ['A', 'B', 'C', 'D','E'];
-    //final values = [30, 80, 45, 60, 50];
-
-   /*return Scaffold(
-      appBar: AppBar(
-        title: Text('Graphic HR'),
-      ),
-      body: 
-      Column(
-        children: [
-      Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Chart(
-          data: List.generate(10000, (index) => {
-            'category': timeHr?[index],
-            'value': valHr?[index],
-          }),
-          variables: {
-            'category': Variable(
-              accessor: (Map map) => map['category'] as String,
-            ),
-            'value': Variable(
-              accessor: (Map map) => map['value'] as num,
-            ),
-          },
-          /*elements: [
-            IntervalElement(
-              elevation: Elevation(size: 5),
-              color: ColorAttr(variable: 'category', values: [Colors.blue, Colors.green, Colors.red, Colors.orange]),
-            ),
-          ],*/
-          marks: <Mark<Shape>>[
-        LineMark(
-          position: Varset('category') * Varset('value'),
-          shape: ShapeEncode(value: BasicLineShape(smooth: true)),
-          size: SizeEncode(value: 2),
-          //color:,
-        ),
-        /*AreaMark(
-            gradient: GradientEncode(
-          value: LinearGradient(
-            begin: const Alignment(0, 0),
-            end: const Alignment(0, 1),
-            colors: [
-              const Color(0xFF326F5E).withOpacity(0.6),
-              const Color(0xFFFFFFFF).withOpacity(0.0),
-            ],
-          ),
-        ))*/  //riempio l'area sottesa dal grafico
-      ],
-          axes: [
-            Defaults.horizontalAxis,
-            Defaults.verticalAxis,
-          ],
-          selections: {
-            'tap': PointSelection(on: {GestureType.scaleUpdate, GestureType.tap}),
-          },
-          tooltip: TooltipGuide(),
-          crosshair: CrosshairGuide(),
-        ),
-      ),
-       ]
-      )
-    );
-    /*return Scaffold(  
-      body: Center(Column( mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-          Text('Day = $day'), 
-          Text('time: ${timeCal?[0]} calories: ${valCal?[0]+valCal?[154]}'),
-          Text('time: ${timeHr?[0]} hr: ${valHr?[1]}'),
-          Text('minutesAsleep = ${sleep?[0]} minutesToFallAsleep = ${sleep?[1]} efficiency = ${sleep?[2]}'),   
-        ],//children
-        ),
-        
-        
-      ),
-      
-  
-      );*/*/
-
+   
       }//build
 }//Class Data
 
@@ -378,24 +330,36 @@ class ColorChangingCard extends StatelessWidget {
     return Card(
       color: _getColorBasedOnNumber(number),
       child: Center(
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
-        child: Column(
+      child: 
+      Row(
           children: [
+            Padding(padding: const EdgeInsets.symmetric(vertical: 20.0, horizontal: 25.0),
+              child:
+            Icon(_smileface(number),
+                color: Colors.white,
+                size:50,)),
+            Padding( padding: EdgeInsets.symmetric(vertical: 20.0, horizontal: 15.0),
+            child:
+            Column(
+              children: [
          Text(
-          'Possible drug times: $number',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+          ' DRUG EVENTS: $number',
+          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight:FontWeight.bold ),
         ),
         SizedBox(
-          height: 5,
+          height:2 ,
         ),
         Text(
-          'Check the data below',
+          'Warning: this is only an estimation \nbased on recorded data',
           style: TextStyle(fontSize: 10, color: Colors.white),
+          textAlign: TextAlign.center,
         ),
         ]
-        )
+        ),
       ),
+        
+        ]
+        )
       )
     );
   }
@@ -417,13 +381,13 @@ class ColorChangingCard extends StatelessWidget {
           children: [
          Text(
           '$number',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 5,
         ),
         Text(
-          'Referring at a medium value of 2500 a day. Check motivations',
+          'Referring at a medium value of 2500 cal/day. ',
           style: TextStyle(fontSize: 10, color: Colors.white),
         ),
         ]
@@ -441,22 +405,22 @@ class ColorChangingCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      color: _getColorBasedOnNumbercalories(number),
+     return Card(
+      color: _getColorBasedOnNumbersleep(number),
       child: Center(
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 15.0),
         child: Column(
           children: [
          Text(
-          '$number',
-          style: TextStyle(fontSize: 20, color: Colors.white),
+          transformMinutesToHours(number),
+          style: TextStyle(fontSize: 20, color: Colors.white, fontWeight: FontWeight.bold),
         ),
         SizedBox(
           height: 5,
         ),
         Text(
-          'Check motivations',
+          'Referring to a large value of sleeping hours for dependecies treatment.',
           style: TextStyle(fontSize: 10, color: Colors.white),
         ),
         ]
@@ -485,9 +449,62 @@ Color _getColorBasedOnNumber(int number) {
   }
 
     Color _getColorBasedOnNumbersleep(num number) {
-    if (number >1000) {
+    if (number >510) {
       return Colors.green.withOpacity(0.5);
     } else {
       return Colors.red.withOpacity(0.5);
     } 
   }
+
+  IconData _smileface(num number) {
+    if (number == 0) {
+      return Icons.sentiment_satisfied;
+    } else {
+      return Icons.sentiment_dissatisfied;
+    } 
+  }
+  String formatDate(DateTime? date) {
+  // Format the date
+  if (date!= null){
+  final String day = DateFormat('EEEE').format(date); // Tuesday
+  final String dateFormatted = DateFormat('dd/MM/yyyy').format(date); // 08/07/2024
+  return '$day $dateFormatted';
+  }
+  else{
+    return 'no day';
+  }
+}
+
+Widget coloredPadding({required Widget child, required Color color, required EdgeInsets padding}) {
+  return Container(
+    color: color,
+    child: Padding(
+      padding: padding,
+      child: child,
+    ),
+  );
+}
+
+String transformMinutesToHours(num totalMinutes) {
+  int hours = totalMinutes ~/ 60; // Integer division to get the hours
+  num minutes = totalMinutes % 60; // Remainder to get the remaining minutes
+  return '$hours h $minutes min';
+}
+
+/*String getDayOfMonthSuffix(int day) {
+  if (!(day >= 1 && day <= 31)) {
+    throw Exception('Invalid day of month');
+  }
+  if (day >= 11 && day <= 13) {
+    return 'th';
+  }
+  switch (day % 10) {
+    case 1:
+      return 'st';
+    case 2:
+      return 'nd';
+    case 3:
+      return 'rd';
+    default:
+      return 'th';
+  }*/

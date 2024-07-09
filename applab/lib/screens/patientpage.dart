@@ -876,8 +876,9 @@ class _PatientPage extends State<PatientPage> {
             'patients'); // ,encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
         await box.putAt(oldondex!, newPat);
       }
+  
       //Navigator.popUntil(context, ModalRoute.withName('/Home Page'))
-     Navigator.pushReplacement(context,MaterialPageRoute(  builder: (context) => HomePage(),));
+     Navigator.pushReplacement(context,MaterialPageRoute(  builder: (context) => HomePage(doctorname: elemntname,),));
     }
   } // _validateAndSave
 
@@ -920,7 +921,7 @@ class _PatientPage extends State<PatientPage> {
     Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => HomePage(),
+          builder: (context) => HomePage(doctorname: elemntname,),
         ));
   } //_deleteAndPop
 } //Patient

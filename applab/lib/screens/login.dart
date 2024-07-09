@@ -181,7 +181,7 @@ class _LoginPageState extends State<LoginPage>{
                       print("Accesso Consentito");
                       final sharedPreferences = await SharedPreferences.getInstance();
                       await sharedPreferences.setString('USERNAMELOGGED', element.surname);
-
+                      String surnamedoctor = element.surname;
                       List<dynamic> pazientinow=_getPatients();
                       int numeropat=pazientinow.length;
                       List<dynamic> listaprovvisoria=[];
@@ -195,7 +195,7 @@ class _LoginPageState extends State<LoginPage>{
 
                       (Provider.of<ModifyPatient>(context, listen: false)).newPatient=listaprovvisoria;
                       Navigator.pushReplacement(
-                        context, MaterialPageRoute(builder: (_) => HomePage()));
+                        context, MaterialPageRoute(builder: (_) => HomePage(doctorname: surnamedoctor,)));
                         access= true;
                        break;
          

@@ -10,11 +10,13 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 //Homepage screen
 class HomePage extends StatelessWidget {
-  HomePage({Key? key}) : super(key: key);
-
+  //HomePage({Key? key}) : super(key: key);
+  String doctorname;
   static const routeDisplayName = 'Doctor';
+  HomePage({required this.doctorname});
 
-  
+  @override
+
   Widget build(BuildContext context){
     //Print the route display name for debugging
     print('${HomePage.routeDisplayName} built');
@@ -22,7 +24,7 @@ class HomePage extends StatelessWidget {
     return Scaffold(
       //HomePage.routeDisplayName
       appBar: AppBar(
-        title: Text('Doctor '  ,
+        title: Text('Dr. '+doctorname  ,
         style: TextStyle(
                         color:  Colors.white,
                         fontStyle: FontStyle.italic,

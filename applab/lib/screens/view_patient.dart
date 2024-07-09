@@ -245,6 +245,11 @@ class PatientHome extends StatefulWidget {
       
       ),
      ),
+     SizedBox(height: 5,),
+     Text('Select a day to check recorded data', 
+     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), ),
+    SizedBox(height:5),
+
     Container(padding: EdgeInsets.all(10),
           decoration: BoxDecoration(
             border: Border.all(color: Colors.blue, width: 2),
@@ -279,6 +284,126 @@ class PatientHome extends StatefulWidget {
               print('format1 $format1');
               day= format1; 
               print('day $day');
+              final result = await _authorize();
+                  print(result);
+                  /*final message = result == null ? 'Authorize failed' : 'Authorize successful';
+                  ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text(message)));*/
+                  
+                  final calories = await _requestCal();     
+                  final hr = await _requestHR();
+                  final sleep = await _requestSleep(); 
+                  final message1 = calories == null ? 'Request failed' : 'Request successful';
+                  final timeCal = _splitTime(calories);
+                  final valCal = _splitVal(calories);
+                  final timeHr = _splitTime(hr);
+                  final valHr = _splitVal(hr);
+                   /*ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text(message1))); */
+                  //DATA ELABORATION
+                  num sumCal =0;
+                  for (int i=0; i<timeCal!.length; i++){                 
+                    double valore = double.parse(valCal?[i]);
+                    sumCal = sumCal+valore;
+                  }//for
+                  print('sumCal = $sumCal');
+
+                  if(sleep?[3]!=0){
+                    String midnight_string = '24:00:00';
+                    String newString = sleep?[3].substring(6);
+                    DateFormat format = DateFormat("HH:mm:ss");
+                    DateTime midnight = format.parse(midnight_string);
+                    DateTime dateTime = format.parse(newString);
+                    print('midnight $midnight');
+                    print('new DateTime $dateTime');
+                    Duration difference = midnight.difference(dateTime);
+                    print('duration = $difference');
+                    if(difference<Duration(hours: 5)){
+                    int inMinutes = difference.inMinutes;
+                    print('difference in minutes = $inMinutes');
+                    sleep?[0]=sleep?[0]+inMinutes; //totale minuti dormiti quella notte
+                    print('new sleep = $sleep');
+                    }else{
+                      print('è andato a letto dopo mezzanotte quindi non ho minuti da sommare');
+                    }//else
+                  }//if  
+                  
+                  if(day!=''){
+                  if ((sumCal!=0)&&(valHr?[0]!=0)&&(sleep?[0]!=0)){
+                  List listona = [];
+                  List<int> indici = [];
+                  bool droga = false;
+                  if (sumCal>2500){ //first trigger VALORE APPOSITAMENTE BASSO
+                  if (sleep?[0]<1000){ //second trigger VALORE APPOSITAMENTE ELEVATO
+                    for (int i=0; i<timeHr!.length; i++ ){
+                      if (valHr?[i]>140){ //third trigger
+                        droga=true;
+                        indici.add(i);
+                      }//if hr>140
+                      else{
+                        if(droga==true){
+                          listona.add(indici);                          
+                          indici = [];//svuoto la lista indici 
+                          droga=false;
+                        }//if droga==true
+                      }//else hr>140
+                    };//for
+                  }//if sleep
+                  }//if calories
+                  print('lunghezza listona = ${listona.length}');     
+                  //se i periodi in cui hr>140 sono più vicini di 1 ora (720 campioni) 
+                  //tra loro allora voglio che vengano considerati come un singolo evento             
+                  for (int i=(listona.length-1); i>0; i--){
+                    if ((listona[i][0]-listona[i-1][listona[i-1].length-1])<720){ //720=12*60
+                      listona[i-1].addAll(listona[i]);
+                      listona.removeAt(i);
+                    };//if
+                  };//for
+                  print('unisco gli eventi ravvicinati:');
+                  print('lunghezza new listona = ${listona.length}');
+                  //se un evento non è vicino ad altri eventi ed è di durata
+                  //inferiore ai 15 minuti (15*12=180) lo elimino da listona perchè
+                  //può essere dovuto a cause non legate all'assunzione di cocaina 
+                  for (int i=(listona.length-1); i>=0; i--){
+                    if (listona[i].length<30){
+                      listona.removeAt(i);                      
+                    };//if
+                  };//for
+                  print ('elimino gli eventi isolati e di breve durata:');
+                  print('lunghezza new listona = ${listona.length}');
+                  print('new listona $listona');
+
+                  listona = _addBefore(listona);
+                  listona = _addAfter(listona);
+                  //print('listona add = $listona');
+                   int lunghezza= listona.length;
+                  int primoindice; 
+                  if (lunghezza != 0){
+                    
+                    int firstindex= (listona[(Provider.of<IndexListona>(context, listen: false)).i])[0];
+                    Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
+                  }
+                  else{
+                    int firstindex= -1 ;
+                    Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
+
+                  }
+                  print(Provider.of<IndexListona>(context,listen:false).primoindice);
+                   Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep, listona: listona, times: lunghezza, data: _selectedDay, calories: sumCal.floor(), sleeping:sleep?[0])));
+                  }//se abbiamo tutti i dati
+                  else{
+                     String messaggio = 'For the selected day there is not enough data available to provide an accurate answer';
+                     ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text(messaggio), backgroundColor: Color.fromARGB(255, 239, 120, 112)));                   
+                  }//se non abbiamo dati sufficienti 
+                  }else{
+                    ScaffoldMessenger.of(context)
+                    ..removeCurrentSnackBar()
+                    ..showSnackBar(SnackBar(content: Text('Select a date'), backgroundColor: Color.fromARGB(255, 239, 120, 112)));
+                  }
               
             }
             
@@ -304,7 +429,7 @@ class PatientHome extends StatefulWidget {
       
 
 
-      floatingActionButton: FloatingActionButton(
+    /*  floatingActionButton: FloatingActionButton(
         
         backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
         child: Text('DATA', 
@@ -414,7 +539,11 @@ class PatientHome extends StatefulWidget {
                     int firstindex= (listona[(Provider.of<IndexListona>(context, listen: false)).i])[0];
                     Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
                   }
-                 
+                  else{
+                    int firstindex= -1 ;
+                    Provider.of<IndexListona>(context,listen:false).modifyprimoindex(firstindex);
+
+                  }
                   print(Provider.of<IndexListona>(context,listen:false).primoindice);
                    Navigator.push(context, MaterialPageRoute(builder: (context) => Data(day: day, timeCal: timeCal, valCal: valCal, timeHr: timeHr, valHr: valHr, sleep: sleep, listona: listona, times: lunghezza, data: day, calories: sumCal.floor(), sleeping:sleep?[0])));
                   }//se abbiamo tutti i dati
@@ -431,7 +560,7 @@ class PatientHome extends StatefulWidget {
                   }
                 },//build
     ),
-    floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
+    */ //floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }//widget
   

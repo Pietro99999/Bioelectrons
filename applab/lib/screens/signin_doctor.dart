@@ -7,6 +7,11 @@ import 'package:applab/models/doctor.dart';
 import 'package:applab/models/doctordatabase.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+import 'package:applab/screens/homepage.dart';
+import 'package:applab/models/modifypatient.dart';
+import 'package:provider/provider.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 
 
 class SignInDoctor extends StatefulWidget{
@@ -99,7 +104,7 @@ class _SignInDoctorState extends State<SignInDoctor>{
               height:20
                ),
 
-        FormDoctTile(labelText: 'Enter a valid name',
+        FormDoctTile(labelText: 'Enter a valid doctor surname',
               controller: _nameDoctor,
             ),
         SizedBox(
@@ -192,10 +197,12 @@ class _SignInDoctorState extends State<SignInDoctor>{
             var box= await Hive.openBox<Doctordatabase>('doctors');
             box.add(newDoct);
             print('Elemento aggiunto');
+            final sharedPreferences = await SharedPreferences.getInstance();
+            await sharedPreferences.setString('USERNAMELOGGED', _nameDoctor.text);
          
-
+         (Provider.of<ModifyPatient>(context, listen: false)).newPatient=[];
        //widget.listDoctor.addDoctor(newDoctor);
-          Navigator.pop(context);
+           Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(doctorname: _nameDoctor.text,)));;
        
       
     }
