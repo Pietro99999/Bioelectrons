@@ -48,6 +48,8 @@ class PatientHome extends StatefulWidget {
     CalendarFormat _calendarFormat = CalendarFormat.month;
     DateTime _focusedDay = DateTime.now();
     DateTime? _selectedDay;
+    String text = ''; 
+    
   //static const routeDisplayName = 'PatientPage';
  @override
   Widget build(BuildContext context) {
@@ -56,7 +58,7 @@ class PatientHome extends StatefulWidget {
       appBar: AppBar(
          backgroundColor:   Color.fromARGB(195, 89, 192, 213),
         centerTitle: true,
-        title: Text('Patient: ${widget.modpat.newPatient[widget.patientIndex].patients}',
+        title: Text('Patient' /*${widget.modpat.newPatient[widget.patientIndex].patients}*/,
         style: TextStyle(
                         color:  Colors.white,
                         fontStyle: FontStyle.italic,
@@ -217,8 +219,6 @@ class PatientHome extends StatefulWidget {
               ),
            ),
            
-            
-            
            
              
               RichText(
@@ -291,7 +291,8 @@ class PatientHome extends StatefulWidget {
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(content: Text(message)));*/
                   
-                  final calories = await _requestCal();     
+                  final calories = await _requestCal(); 
+                  final exercise = _requestExe();    
                   final hr = await _requestHR();
                   final sleep = await _requestSleep(); 
                   final message1 = calories == null ? 'Request failed' : 'Request successful';
@@ -299,6 +300,7 @@ class PatientHome extends StatefulWidget {
                   final valCal = _splitVal(calories);
                   final timeHr = _splitTime(hr);
                   final valHr = _splitVal(hr);
+                  
                    /*ScaffoldMessenger.of(context)
                     ..removeCurrentSnackBar()
                     ..showSnackBar(SnackBar(content: Text(message1))); */
@@ -611,6 +613,51 @@ Future<List?> _requestCal() async {
     return result; } //_requestCal
 
 
+Future<List?> _requestExe() async {
+   
+    List? result = [];
+
+    //Get the stored access token
+    final sp = await SharedPreferences.getInstance();  
+    var access = sp.getString('access');
+
+    //If access token is expired, refresh it
+    if(JwtDecoder.isExpired(access!)){
+      await _refreshTokens();
+      access = sp.getString('access');
+    }//if
+
+    //Create the request   
+    final url = Impact.baseUrl + Impact.exerciseEndpoint + Impact.patientUsername + '/day/$day/';
+    final headers = {HttpHeaders.authorizationHeader: 'Bearer $access'};
+
+    //Get the response
+    print('Calling: $url');
+    
+    final response = await http.get(Uri.parse(url), headers: headers);
+    print('${response.statusCode}');
+    //if OK parse the response
+    if (response.statusCode == 200) {
+      final decodedResponse = jsonDecode(response.body);
+      //print(decodedResponse['data']);
+      if (decodedResponse['data'].length!=0){      
+      for (var i = 0; i < decodedResponse['data']['data'].length; i++) { 
+        print ('exe ${decodedResponse['data']['data'][i]['time']}') ;
+        result.add(decodedResponse['data']['data'][i]['time']);
+      }//for
+      }else{
+       result.add('0');
+       print ('exercize data no available --> $result'); 
+      }
+    } //if
+    else{
+      result.add('0');
+      print ('Error 400 calories data no available --> $result');
+    }//else
+
+    return result; } //_requestExe 
+
+
 Future<List?> _requestHR() async {
     
     List? result = [];
@@ -710,7 +757,23 @@ Future<List?> _requestSleep() async {
     print('sleep= $result');
     return result;  } //_requestSleep
 
+    String? _getText(){
+  String text ='';
+  print ('In trattamento: ${widget.modpat.newPatient[widget.patientIndex].treatm}');
+  if ('${widget.modpat.newPatient[widget.patientIndex].treatm}'=='a'){
+    text = widget.modpat.newPatient[widget.patientIndex].treatm; 
+
+  }else{
+
+  }
+
+return text;
+}
+
+
 }//PatientPage
+
+
 
 
 List? _splitTime(List? lista){

@@ -59,6 +59,14 @@ dev_dependencies:
     sdk: flutter
   hive_generator: ^1.1.0
   build_runner: ^2.1.7
+  flutter_launcher_icons: ^0.13.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  #image_path: 'applab\assets\IMG_7383.PNG'
+  #image_path: 'assets/logo.png'  
+  image_path: 'assets/logo.png' 
 
   # The "flutter_lints" package below contains a set of recommended lints to
   # encourage good coding practices. The lint set provided by the package is

@@ -67,7 +67,7 @@ import 'package:table_calendar/table_calendar.dart';
                     Text(formatDate(data),
                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 25.0,
+                        fontSize: 24.0,
                         fontWeight:FontWeight.bold
                         
                        
@@ -115,7 +115,7 @@ import 'package:table_calendar/table_calendar.dart';
                         if (newindex<0 ){
                           ScaffoldMessenger.of(context)
                           ..removeCurrentSnackBar()
-                          ..showSnackBar(SnackBar(content: Text('No more data to sho')));
+                          ..showSnackBar(SnackBar(content: Text('No more data to show')));
 
                         }
                         else{
@@ -237,7 +237,7 @@ import 'package:table_calendar/table_calendar.dart';
                   ),
                   
                     ),
-                     Text('The above graph shows periods when heart rate exceeds the value of 130. \nThis could be significant related to coke assumption. Check motivation with the patient',
+                     Text('The above graph shows periods when heart rate exceeds the value of 140. \nThis could be significant related to coke assumption. Check motivation with the patient',
           style: TextStyle(
                         color: Colors.grey,
                         fontSize: 10.0,
@@ -294,7 +294,7 @@ import 'package:table_calendar/table_calendar.dart';
                         fontWeight:FontWeight.bold,
                        )),
             Sleepsdata(number: sleeping),
-            Text('The drug use can decrease the sleeping hours. Moreover, the patient under treatment should get at least 9h of sleeps. \nIn case of lack  with the patient',
+            Text('The drug use can decrease the sleeping hours. Moreover, the patient under treatment should get at least 9h of sleeps. \nIn case of lack of sleep, check with the patient',
              style: TextStyle(
                         color: Colors.grey,
                         fontSize: 10.0,
