@@ -49,7 +49,18 @@ class HomePage extends StatelessWidget {
             
 
             return modpat.newPatient.isEmpty
-                ? Text('The patient list is currently empty')
+                ? RichText(
+                    textAlign: TextAlign.center,
+                    text: TextSpan(
+                    text: 'Press ',
+                    style: const TextStyle(color:Color.fromARGB(249, 13, 211, 242), fontWeight: FontWeight.normal, fontSize: 20), 
+                    children:  <TextSpan>[ 
+                
+                    TextSpan(text: 'PLUS ', style: TextStyle(fontWeight: FontWeight.bold ),),
+                      TextSpan(text: 'to add a patient', style: TextStyle(fontWeight: FontWeight.normal, )),
+               ],
+              ),
+           )
                 : ListView.builder(
                     itemCount: modpat.newPatient.length,
                     itemBuilder: (context, patientIndex) {
