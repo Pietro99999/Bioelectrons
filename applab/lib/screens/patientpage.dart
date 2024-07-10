@@ -813,10 +813,7 @@ class _PatientPage extends State<PatientPage> {
       _controllerSex = true;
     }
     
-    
-    if(int.parse(_controllerAge.text)+13>(int.parse(_controllerYear.text))){
-      yearval=false;
-    }
+  
 
     if (formKey.currentState!.validate() && butnStat && yearval==true) {
       //print(currentOption);
@@ -873,7 +870,7 @@ class _PatientPage extends State<PatientPage> {
         
 
        var box =Hive.box<Patientdatabase>('patients');
-        box.add(newPat);
+       await box.putAt(oldondex!, newPat);
       }
   
       //Navigator.popUntil(context, ModalRoute.withName('/Home Page'))
