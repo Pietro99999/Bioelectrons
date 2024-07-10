@@ -1,9 +1,9 @@
-import 'package:applab/models/doctor.dart';
+//import 'package:applab/models/doctor.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/signin_doctor.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+//import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:applab/screens/homepage.dart';
@@ -11,7 +11,7 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:applab/models/doctordatabase.dart';
 import 'package:hive/hive.dart';
 import 'package:applab/models/patient.dart';
-import 'package:applab/providers/indexlistona.dart';
+//import 'package:applab/providers/indexlistona.dart';
 import 'package:applab/providers/modifypatient.dart';
 
 

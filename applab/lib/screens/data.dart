@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:graphic/graphic.dart';
 import 'package:provider/provider.dart';
 import 'package:intl/intl.dart';
-import 'package:table_calendar/table_calendar.dart';
+//import 'package:table_calendar/table_calendar.dart';
 import 'package:applab/providers/indexlistona.dart';
 
 
@@ -10,26 +10,24 @@ import 'package:applab/providers/indexlistona.dart';
 
  class Data extends StatelessWidget{
  
-  final List? timeCal;  // list of strings  
-  final List? sleep;  // [0]minutesAsleep [1]minutesToFallAsleep [2]efficiency   integers
-  final List? valCal; // list of int strings
-  final List? timeHr; // list of strings
-  final List? valHr;  // list of int values
+  final List? timeCal;  
+  final List? sleep;  
+  final List? valCal; 
+  final List? timeHr; 
+  final List? valHr;  
   final String? day; 
   final List listona;
   final int times;
   final DateTime? data;
   final num calories;
-  final num sleeping;
-  
+  final num sleeping;  
  
   
   Data({required this.day, required this.timeCal, required this.valCal, required this.timeHr, required this.valHr, required this.sleep, required this.listona, required this.times, required this.data, required this.calories, required this.sleeping,});
 
 
   @override
-  Widget build(BuildContext context) {   
-  
+  Widget build(BuildContext context) {     
     
     return Scaffold(
       appBar: AppBar (

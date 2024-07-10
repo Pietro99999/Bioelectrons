@@ -1,4 +1,4 @@
-import 'dart:convert';
+//import 'dart:convert';
 import 'package:applab/providers/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/homepage.dart';
@@ -8,12 +8,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter/painting.dart';
 import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
-import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+//import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/models/patient.dart';
 import 'package:applab/utils/format.dart';
 import 'package:hive/hive.dart';
-import 'package:applab/models/patientdatabase.dart';
+//import 'package:applab/models/patientdatabase.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -63,7 +63,7 @@ class _PatientPage extends State<PatientPage> {
       Hive.box<Patientdatabase>('patients');
 
   int? findIndex(Patientdatabase patientofind) {
-    for (int i = 0; i < patientdatabase1!.length; i++) {
+    for (int i = 0; i < patientdatabase1.length; i++) {
       if ((patientdatabase1.getAt(i))?.age == patientofind.age &&
           (patientdatabase1.getAt(i))?.patients == patientofind.patients &&
           (patientdatabase1.getAt(i)?.weight) == patientofind.weight &&

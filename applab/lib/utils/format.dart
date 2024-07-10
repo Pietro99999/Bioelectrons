@@ -1,9 +1,9 @@
-import 'package:applab/models/doctordatabase.dart';
+//import 'package:applab/models/doctordatabase.dart';
 import 'package:flutter/material.dart';
-import 'package:hive/hive.dart';
-import 'package:intl/intl.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:applab/screens/homepage.dart';
+//import 'package:hive/hive.dart';
+//import 'package:intl/intl.dart';
+//import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+//import 'package:applab/screens/homepage.dart';
 import 'package:fancy_password_field/fancy_password_field.dart';
 import 'package:step_progress_indicator/step_progress_indicator.dart';
 

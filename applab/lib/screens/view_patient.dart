@@ -31,13 +31,10 @@ class PatientHome extends StatefulWidget {
  }
   
 //GIORNI INTERESSANTI:
-//GIORNI INTERESSANTI:
-//10/06/2024 DUE EVENTI
-//21/06/2024 UN EVENTO
+//10/06/2024 2 EVENTI
+//21/06/2024 1 EVENTO
 //07/07/2024 CI SAREBBE UN EVENTO MA TROPPO BREVE
-//29/05 /24 UN EVENTO
-//
-//
+//29/05/24 1 EVENTO
 
   
   class _PatientHomeState extends State<PatientHome> {
@@ -234,18 +231,12 @@ class PatientHome extends StatefulWidget {
                ],
               ),
            ),
-          
-            
-           
-           ],
+          ],
         ),
         )
         )
         ),
-        
-                
-                ],
-      
+        ],      
       ),
      ),
 
@@ -292,16 +283,11 @@ class PatientHome extends StatefulWidget {
               print('day $day');
               final result = await _authorize();
                   print(result);
-                  /*final message = result == null ? 'Authorize failed' : 'Authorize successful';
-                  ScaffoldMessenger.of(context)
-                    ..removeCurrentSnackBar()
-                    ..showSnackBar(SnackBar(content: Text(message)));*/
                   
                   final calories = await _requestCal(); 
                   final exercise = await _requestExe();    
                   final hr = await _requestHR();
                   final sleep = await _requestSleep(); 
-                  final message1 = calories == null ? 'Request failed' : 'Request successful';
                   final timeCal = _splitTime(calories);
                   final valCal = _splitVal(calories);
                   final timeHr = _splitTime(hr);
@@ -330,7 +316,7 @@ class PatientHome extends StatefulWidget {
                     if(difference<Duration(hours: 5)){
                     int inMinutes = difference.inMinutes;
                     print('difference in minutes = $inMinutes');
-                    sleep?[0]=sleep?[0]+inMinutes; //totale minuti dormiti quella notte
+                    sleep?[0]=sleep[0]+inMinutes; //totale minuti dormiti quella notte
                     print('new sleep = $sleep');
                     }else{
                       print('è andato a letto dopo mezzanotte quindi non ho minuti da sommare');
@@ -376,7 +362,7 @@ class PatientHome extends StatefulWidget {
 
 
                    //se i periodi coincidono con l'allenamento li elimino. Gli allenamenti e i probabili eventi di 
-                  // di droga devono distare almeno 120 minuti di differenza. Se non è così, il picco dei battiti è attività fisica!
+                  //droga devono distare almeno 120 minuti. Se non è così, il picco dei battiti è attività fisica!
                   List listatoremove =[];
                   if (exercise!=null){  
                   for (int i=0; i<listona.length; i++){
@@ -393,18 +379,12 @@ class PatientHome extends StatefulWidget {
                       Duration differenza = (tempi).difference(allenamento);
                     if ((differenza.inMinutes).abs()<120){
                       print('La differenza da allenamento è ${differenza.inMinutes.abs()} min');
-                    remove=true;
-                      
+                    remove=true;                      
                     };
                      }
-                     else{
-                      continue;
-                     }
-                     
+                     else{continue;}                     
                     }
-                    if (remove==true){
-                      listatoremove.add(i);
-                    }
+                    if (remove==true){listatoremove.add(i);}
                   }
                   }
                   
@@ -430,8 +410,7 @@ class PatientHome extends StatefulWidget {
 
                   listona = _addBefore(listona);
                   listona = _addAfter(listona);
-                  //print('listona add = $listona');
-                   int lunghezza= listona.length;
+                  int lunghezza= listona.length;
                   Provider.of<IndexListona>(context, listen: false).modifyi(0); 
                   if (lunghezza != 0){
                     
@@ -511,7 +490,6 @@ Future<List?> _requestCal() async {
     //if OK parse the response
     if (response.statusCode == 200) {
       final decodedResponse = jsonDecode(response.body);
-      //print(decodedResponse['data']);
       if (decodedResponse['data'].length!=0){      
       for (var i = 0; i < decodedResponse['data']['data'].length; i++) {  
         result.add(decodedResponse['data']['data'][i]['time']);
@@ -558,10 +536,8 @@ Future<List?> _requestExe() async {
     //if OK parse the response
     if (response.statusCode == 200) {
       final decodedResponse = jsonDecode(response.body);
-      //print(decodedResponse['data']);
       if (decodedResponse['data'].length!=0){      
       for (var i = 0; i < decodedResponse['data']['data'].length; i++) { 
-        print ('exe ${decodedResponse['data']['data'][i]['time']}') ;
         result.add(decodedResponse['data']['data'][i]['time']);
       }//for
       }else{
@@ -602,7 +578,6 @@ Future<List?> _requestHR() async {
     //if OK parse the response
     if (response.statusCode == 200) {
       final decodedResponse = jsonDecode(response.body);
-      print(decodedResponse['data']);
       if (decodedResponse['data'].length!=0){ 
       for (var i = 0; i < decodedResponse['data']['data'].length; i++) { 
         result.add(decodedResponse['data']['data'][i]['time']);
@@ -711,7 +686,6 @@ List? _splitVal(List? lista){
   List? val = [];
   int l =lista!.length;
     for (int i = 1; i < l; i=i+2){
-      //val.add(int.parse(lista[i]) );
       val.add(lista[i]);
     }//for
     print('numero valori: $l');

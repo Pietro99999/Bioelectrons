@@ -1,12 +1,12 @@
 import 'package:applab/models/doctordatabase.dart';
-import 'package:applab/screens/login.dart';
+//import 'package:applab/screens/login.dart';
 import 'package:applab/utils/format.dart';
-import 'package:fancy_password_field/fancy_password_field.dart';
+//import 'package:fancy_password_field/fancy_password_field.dart';
 import 'package:flutter/material.dart';
-import 'package:applab/models/doctor.dart';
-import 'package:applab/models/doctordatabase.dart';
+//import 'package:applab/models/doctor.dart';
+//import 'package:applab/models/doctordatabase.dart';
 import 'package:hive/hive.dart';
-import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
+//import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/screens/homepage.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -1,10 +1,9 @@
 import 'dart:convert';
-
 import 'package:applab/models/doctordatabase.dart';
 import 'package:applab/screens/splashscreen.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:hive/hive.dart';
+//import 'package:hive/hive.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:flutter_secure_storage/flutter_secure_storage.dart';
