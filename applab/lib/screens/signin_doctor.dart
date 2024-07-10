@@ -8,9 +8,10 @@ import 'package:applab/models/doctordatabase.dart';
 import 'package:hive/hive.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
 import 'package:applab/screens/homepage.dart';
-import 'package:applab/models/modifypatient.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:applab/providers/modifypatient.dart';
+
 
 
 
@@ -175,7 +176,7 @@ class _SignInDoctorState extends State<SignInDoctor>{
      
 
     void _validateAndSave(BuildContext context)async{
-         var box = Hive.isBoxOpen('doctors') ? Hive.box<Doctordatabase>('doctors') : await Hive.openBox<Doctordatabase>('doctors');
+         var box = Hive.box<Doctordatabase>('doctors');
 
         bool emailExists = box.values.any((doctor) => doctor.email == _emailDoctor.text);
       if(emailExists){
@@ -191,10 +192,8 @@ class _SignInDoctorState extends State<SignInDoctor>{
       }else{
 
        if (formKey.currentState!.validate()){
-          //Doctor newDoctor = Doctor(surname: _nameDoctor.text, email: _emailDoctor.text, password: _passwordDoctor.text );
-          //widget.listDoctor.addDoctor(newDoctor);
+          
             var newDoct= Doctordatabase(_nameDoctor.text, _emailDoctor.text, _passwordDoctor.text);
-            var box= await Hive.openBox<Doctordatabase>('doctors');
             box.add(newDoct);
             print('Elemento aggiunto');
             final sharedPreferences = await SharedPreferences.getInstance();
@@ -202,7 +201,7 @@ class _SignInDoctorState extends State<SignInDoctor>{
          
          (Provider.of<ModifyPatient>(context, listen: false)).newPatient=[];
        //widget.listDoctor.addDoctor(newDoctor);
-           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(doctorname: _nameDoctor.text,)));;
+           Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => HomePage(doctorname: _nameDoctor.text,)),(Route<dynamic> route) => false,);;
        
       
     }

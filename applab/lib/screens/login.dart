@@ -1,5 +1,4 @@
 import 'package:applab/models/doctor.dart';
-import 'package:applab/models/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/signin_doctor.dart';
 import 'package:flutter/cupertino.dart';
@@ -12,7 +11,9 @@ import 'package:flutter_custom_clippers/flutter_custom_clippers.dart';
 import 'package:applab/models/doctordatabase.dart';
 import 'package:hive/hive.dart';
 import 'package:applab/models/patient.dart';
-import 'package:applab/models/modifypatient.dart';
+import 'package:applab/providers/indexlistona.dart';
+import 'package:applab/providers/modifypatient.dart';
+
 
 
 class LoginPage extends StatefulWidget {

@@ -20,5 +20,10 @@ void modifyprimoindex(int newindex){
     notifyListeners();
 }
 
+void modifyi(int newi){
+    i=newi;
+    notifyListeners();
+}
+
 
 }

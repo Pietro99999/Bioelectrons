@@ -1,6 +1,5 @@
 import 'dart:convert';
-
-import 'package:applab/models/modifypatient.dart';
+import 'package:applab/providers/modifypatient.dart';
 import 'package:applab/models/patientdatabase.dart';
 import 'package:applab/screens/homepage.dart';
 import 'package:applab/utils/button.dart';
@@ -846,21 +845,9 @@ class _PatientPage extends State<PatientPage> {
           elemntname!);
       if (widget.patientIndex == -1) {
         widget.modpat.addPatient(newPatient);
-        /*  const secureStorage = FlutterSecureStorage();
-        // if key not exists return null
-        final encryptionKeyString = await secureStorage.read(key: 'key');
-        if (encryptionKeyString == null) {
-        final key = Hive.generateSecureKey();
-        await secureStorage.write(
-          key: 'key',
-          value: base64UrlEncode(key),
-       );
-      }
-          final key = await secureStorage.read(key: 'key');
-          final encryptionKeyUint8List = base64Url.decode(key!);*/
+        
 
-        var box = await Hive.openBox<Patientdatabase>(
-            'patients'); //, encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
+        var box =Hive.box<Patientdatabase>('patients');
         box.add(newPat);
       } else {
         Patients provoiuspat =
@@ -883,26 +870,14 @@ class _PatientPage extends State<PatientPage> {
             oldsex, oldyear, oldgrav, oldtreatm, olddrug, elemntname!);
         int? oldondex = findIndex(oldpat);
 
-        /*const secureStorage = FlutterSecureStorage();
-        // if key not exists return null
-        final encryptionKeyString = await secureStorage.read(key: 'key');
-        if (encryptionKeyString == null) {
-        final key = Hive.generateSecureKey();
-        await secureStorage.write(
-          key: 'key',
-          value: base64UrlEncode(key),
-       );
-      }
-          final key = await secureStorage.read(key: 'key');
-          final encryptionKeyUint8List = base64Url.decode(key!); */
+        
 
-        var box = await Hive.openBox<Patientdatabase>(
-            'patients'); // ,encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
-        await box.putAt(oldondex!, newPat);
+       var box =Hive.box<Patientdatabase>('patients');
+        box.add(newPat);
       }
   
       //Navigator.popUntil(context, ModalRoute.withName('/Home Page'))
-     Navigator.pushReplacement(context,MaterialPageRoute(  builder: (context) => HomePage(doctorname: elemntname,),));
+     Navigator.pushAndRemoveUntil(context,MaterialPageRoute(  builder: (context) => HomePage(doctorname: elemntname,)),(Route<dynamic> route) => false,);
     }
   } // _validateAndSave
 
@@ -925,27 +900,11 @@ class _PatientPage extends State<PatientPage> {
     widget.modpat.removePatient(widget.patientIndex);
     var oldpat = Patientdatabase(oldname, oldage, oldweight, oldheight, oldsex,
         oldyear, oldgrav, oldtreatm, olddrug, elemntname!);
-    /* const secureStorage = FlutterSecureStorage();
-        // if key not exists return null
-        final encryptionKeyString = await secureStorage.read(key: 'key');
-        if (encryptionKeyString == null) {
-        final key = Hive.generateSecureKey();
-        await secureStorage.write(
-          key: 'key',
-          value: base64UrlEncode(key),
-       );
-      }
-          final key = await secureStorage.read(key: 'key');
-          final encryptionKeyUint8List = base64Url.decode(key!); */
-
-    var box = await Hive.openBox<Patientdatabase>(
-        'patients'); //, encryptionCipher: HiveAesCipher(encryptionKeyUint8List)
+    
+  
+    var box =Hive.box<Patientdatabase>('patients');
     int? oldondex = findIndex(oldpat);
     box.deleteAt(oldondex!);
-    Navigator.pushReplacement(
-        context,
-        MaterialPageRoute(
-          builder: (context) => HomePage(doctorname: elemntname,),
-        ));
+     Navigator.pushAndRemoveUntil(context,MaterialPageRoute(  builder: (context) => HomePage(doctorname: elemntname,)),(Route<dynamic> route) => false,);
   } //_deleteAndPop
 } //Patient

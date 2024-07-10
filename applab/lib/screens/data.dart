@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:applab/utils/plotCal.dart';
 import 'package:graphic/graphic.dart';
 import 'package:provider/provider.dart';
-import 'package:applab/models/indexlistona.dart';
 import 'package:intl/intl.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:applab/providers/indexlistona.dart';
+
+
 
 
  class Data extends StatelessWidget{
@@ -59,9 +60,7 @@ import 'package:table_calendar/table_calendar.dart';
                   //DATA 
                   Row(mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                     //Padding(padding: const EdgeInsets.all(8.0),
-                 //   ),
-                    coloredPadding(//padding: const EdgeInsets.all(8.0),
+                    coloredPadding(
                     child: 
                      
                     Text(formatDate(data),
@@ -120,10 +119,10 @@ import 'package:table_calendar/table_calendar.dart';
                               int ke= Provider.of<IndexListona>(context, listen: false).i;
                              (Provider.of<IndexListona>(context, listen: false)).removeIndex();
                              int primoindex= ((listona[(Provider.of<IndexListona>(context, listen: false)).i])[0]);
-                                print('l indice è $ke');
+                              
                                 Provider.of<IndexListona>(context,listen:false).modifyprimoindex(primoindex);
                                 int cc= Provider.of<IndexListona>(context,listen:false).primoindice;
-                              print('primo indice è $cc e $primoindex');
+                             
 
                         }
                       },
@@ -154,10 +153,9 @@ import 'package:table_calendar/table_calendar.dart';
                               
                               int f = Provider.of<IndexListona>(context, listen: false).i;
                                int primoindex= ((listona[(Provider.of<IndexListona>(context, listen: false)).i])[0]);
-                               print('l indice è $f');
                                Provider.of<IndexListona>(context,listen:false).modifyprimoindex(primoindex);
                                int g= Provider.of<IndexListona>(context,listen:false).primoindice;
-                              print('primo indice è $g e $primoindex');
+                             
                         }
               
                       },
@@ -188,8 +186,6 @@ import 'package:table_calendar/table_calendar.dart';
                     ));
                    }
                    else{    
-                    print('yess');
-                    print(Provider.of<IndexListona>(context,listen:false).primoindice);
                    return Padding(padding: const EdgeInsets.all(8.0),
                    child: Chart(
                     rebuild:true,

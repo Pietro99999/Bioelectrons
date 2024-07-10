@@ -2,11 +2,12 @@ import 'package:applab/screens/login.dart';
 import 'package:applab/utils/button.dart';
 import 'package:flutter/material.dart';
 import 'package:material_design_icons_flutter/material_design_icons_flutter.dart';
-import 'package:applab/models/modifypatient.dart';
 import 'package:applab/screens/view_patient.dart';
 import 'package:provider/provider.dart';
 import 'package:applab/screens/patientpage.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:applab/providers/modifypatient.dart';
+
 
 //Homepage screen
 class HomePage extends StatelessWidget {

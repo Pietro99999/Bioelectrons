@@ -1,11 +1,10 @@
 import 'package:applab/screens/data.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:applab/models/modifypatient.dart';
 import 'package:applab/screens/patientpage.dart';
 import 'package:flutter/widgets.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:applab/utils/impact.dart';
+import 'package:applab/services/impact.dart';
 import 'dart:convert'show jsonDecode;
 import 'dart:io';
 import 'package:http/http.dart' as http;
@@ -13,8 +12,9 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:applab/utils/button.dart';
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
-import 'package:applab/models/indexlistona.dart';
 import 'package:table_calendar/table_calendar.dart';
+import 'package:applab/providers/indexlistona.dart';
+import 'package:applab/providers/modifypatient.dart';
 
 
 class PatientHome extends StatefulWidget {
@@ -371,7 +371,7 @@ class PatientHome extends StatefulWidget {
                     };//for
                   }//if sleep
                   }//if calories
-                  print('lunghezza listona = ${listona.length}');     
+                  print('lunghezza lista eventi prima di analisi = ${listona.length}');     
 
 
                   //se i periodi in cui hr>140 sono più vicini di 1 ora (720 campioni) 
@@ -383,7 +383,7 @@ class PatientHome extends StatefulWidget {
                     };//if
                   };//for
                   print('unisco gli eventi ravvicinati:');
-                  print('lunghezza new listona = ${listona.length}');
+                  print('lunghezza new eventi droga = ${listona.length} con eventi ravvicinati');
 
 
 
@@ -393,7 +393,6 @@ class PatientHome extends StatefulWidget {
                   if (exercise!=null){  
                   for (int i=0; i<listona.length; i++){
                     bool remove= false;
-                    print(i);
                     String tempolista= timeHr?[listona[i][0]];
                     for (int k=0; k< exercise.length; k++){ 
                       //print(exercise[k]);
@@ -401,7 +400,7 @@ class PatientHome extends StatefulWidget {
                       DateFormat format = DateFormat("HH:mm:ss");
                       DateTime tempi = format.parse(tempolista);
                       DateTime allenamento=format.parse(exercise[k]);
-                      print('evento segnalato a ora $tempi');
+                      print('evento droga segnalato a ora $tempi');
                       print('allenamento è stato rilevato alle $allenamento');
                       Duration differenza = (tempi).difference(allenamento);
                     if ((differenza.inMinutes).abs()<120){
@@ -424,7 +423,7 @@ class PatientHome extends StatefulWidget {
                   for (int i=listatoremove.length-1; i>=0; i--){
                     listona.removeAt(listatoremove[i]);
                   }
-                  print('new lunghezza listona ${listona.length}, togliamo allenamento');
+                  print('new lunghezza eventi droga ${listona.length} dopo analisi allenamento');
 
 
 
@@ -438,14 +437,14 @@ class PatientHome extends StatefulWidget {
                     };//if
                   };//for
                   print ('elimino gli eventi isolati e di breve durata:');
-                  print('lunghezza new listona = ${listona.length}');
-                  print('new listona $listona');
+                  print('lunghezza new eventi droga = ${listona.length}, unendo eventi ravvicinati');
+                  print('Eventi droga finale $listona');
 
                   listona = _addBefore(listona);
                   listona = _addAfter(listona);
                   //print('listona add = $listona');
                    int lunghezza= listona.length;
-                  int primoindice; 
+                  Provider.of<IndexListona>(context, listen: false).modifyi(0); 
                   if (lunghezza != 0){
                     
                     int firstindex= (listona[(Provider.of<IndexListona>(context, listen: false)).i])[0];
@@ -493,7 +492,10 @@ class PatientHome extends StatefulWidget {
   }//widget
 
 
+
+/////
 //FUNCTIONS TO REQUIRED DATA
+/////
   
 Future<List?> _requestCal() async {
    
@@ -703,8 +705,9 @@ return (text);
 
 
 
-
+/////
 //FUNCTION TO HAVE READABLE DATA 
+/////
 
 List? _splitTime(List? lista){
   List? time = [];
