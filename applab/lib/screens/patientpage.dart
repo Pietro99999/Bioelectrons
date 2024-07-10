@@ -84,7 +84,7 @@ class _PatientPage extends State<PatientPage> {
     _controllerSex= widget.patientIndex == -1 ? null : widget.modpat.newPatient[widget.patientIndex].sex;
     _controllerYear.text= widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].year.toString();
     _currentOption= widget.patientIndex == -1 ? gravity[0] : widget.modpat.newPatient[widget.patientIndex].grav.toString();
-    _underTreatment= widget.patientIndex == -1 ? treat[0] : widget.modpat.newPatient[widget.patientIndex].treatm.toString();
+    _underTreatment= widget.patientIndex == -1 ? treat[1] : widget.modpat.newPatient[widget.patientIndex].treatm.toString();
 
     if (widget.patientIndex == -1) {widget.button.bottonState()== false;}else{  widget.button.bottonState() == true;}
     if (widget.patientIndex == -1) {
@@ -130,8 +130,7 @@ class _PatientPage extends State<PatientPage> {
     //Print the route display name for debugging
     print('${PatientPage.routeDisplayName} built');
 
-    //The page is composed of a form. An action in the AppBar is used to validate and save the information provided by the user.
-    //A FAB is showed to provide the "delete" functinality. It is showed only if the patient already exists.
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color.fromRGBO(36, 208, 220, 1),
@@ -873,14 +872,13 @@ class _PatientPage extends State<PatientPage> {
        await box.putAt(oldondex!, newPat);
       }
   
-      //Navigator.popUntil(context, ModalRoute.withName('/Home Page'))
      Navigator.pushAndRemoveUntil(context,MaterialPageRoute(  builder: (context) => HomePage(doctorname: elemntname,)),(Route<dynamic> route) => false,);
     }
   } // _validateAndSave
 
   //Utility method that deletes
   void _deleteAndPop(BuildContext context) async {
-    // widget.modpat.removePatient(widget.patientIndex);
+
     Patients provoiuspat = (Provider.of<ModifyPatient>(context, listen: false))
         .newPatient[widget.patientIndex];
     String oldname = provoiuspat.patients;

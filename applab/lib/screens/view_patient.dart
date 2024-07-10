@@ -39,16 +39,6 @@ class PatientHome extends StatefulWidget {
 //
 //
 
-//2024-04-23 i dati sleep richiedono [0] e dorme poco perchè va a letto a mezzanotte (348 minuti)
-//2024/04/26 due eventi ma uno breve. UN EVENTO SEGNALATO    BELLO COME SEMPIO
-//2024/04/28 no eventi
-//2024/05/30 due eventi ma brevi
-//2024/05/29 due eventi DUE EVENTI SEGNALATI
-//2024/12/25 NO data
-//dal 2023/11/30  al 2024/02/09 non ci sono dati 
-//2023/08/15 NO dati sleep
-//2023-04-27 è andato a letto dopo mezzanotte. UN EVENTO
-
   
   class _PatientHomeState extends State<PatientHome> {
     String day = ''; 
@@ -64,13 +54,11 @@ class PatientHome extends StatefulWidget {
     String? treatment = widget.modpat.newPatient[widget.patientIndex].drug.toString(); 
     treatment= treatment.replaceAll('[', '').replaceAll(']', '');
     int currentYear=_focusedDay.year;
-    //String treatment = trattamento.replaceAll('[', '').replaceAll(']', '');
-   // print('${PatientHome.routeDisplayName} built');
     return Scaffold(
       appBar: AppBar(
          backgroundColor:   Color.fromARGB(195, 89, 192, 213),
         centerTitle: true,
-        title: Text('Patient' /*${widget.modpat.newPatient[widget.patientIndex].patients}*/,
+        title: Text('Patient',
         style: TextStyle(
                         color:  Colors.white,
                         fontStyle: FontStyle.italic,
@@ -242,7 +230,7 @@ class PatientHome extends StatefulWidget {
                     text: text,
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '$treatment'/*'${widget.modpat.newPatient[widget.patientIndex].drug }  '*/, style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    TextSpan(text: '$treatment', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
                ],
               ),
            ),
@@ -429,7 +417,7 @@ class PatientHome extends StatefulWidget {
 
 
                   //se un evento non è vicino ad altri eventi ed è di durata
-                  //inferiore ai 15 minuti (15*12=180) lo elimino da listona perchè
+                  //inferiore ai 2.5 minuti lo elimino da listona perchè
                   //può essere dovuto a cause non legate all'assunzione di cocaina 
                   for (int i=(listona.length-1); i>=0; i--){
                     if (listona[i].length<30){

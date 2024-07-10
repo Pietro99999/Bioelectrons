@@ -66,7 +66,7 @@ import 'package:applab/providers/indexlistona.dart';
                     Text(formatDate(data),
                      style: TextStyle(
                         color: Colors.white,
-                        fontSize: 24.0,
+                        fontSize: 20.0,
                         fontWeight:FontWeight.bold
                         
                        

@@ -16,12 +16,12 @@ import 'package:applab/providers/modifypatient.dart';
 
 
 class SignInDoctor extends StatefulWidget{
-  //final ListDoctor listDoctor;
+
   SignInDoctor({Key? key}):super(key:key);
   static const routeDisplayName = 'Sign Up';
   @override
   State<SignInDoctor> createState() => _SignInDoctorState();
-  //final Box<Doctordatabase> databaseBox= Hive.box<Doctordatabase>('myBox');
+
 }
 
 class _SignInDoctorState extends State<SignInDoctor>{

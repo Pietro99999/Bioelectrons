@@ -31,7 +31,6 @@ class _LoginPageState extends State<LoginPage>{
   final Box<Patientdatabase> patientdatabase1= Hive.box<Patientdatabase>('patients');
  
   List _getUsers(){
-   // List<dynamic>? listdoc= databaseBox.get('listadottori')?.cast<dynamic>();
   Iterable<Doctordatabase> dottiriii= databaseBox.values;
   print(databaseBox.values);
   List listadoctors= dottiriii.toList();
@@ -52,7 +51,6 @@ class _LoginPageState extends State<LoginPage>{
     return Scaffold(
       body:SingleChildScrollView( 
         child: Column(
-         // mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Stack(
                 children: [ 
@@ -172,7 +170,6 @@ class _LoginPageState extends State<LoginPage>{
                     bool access=false;
 
                   for (var i = 0; i< ind; i++ ){
-                    //Doctor element = listaaa.doctors[i];
                     
                     Doctordatabase element= listanow[i]; //controllo ogni elemento del database dottori
                     print(listanow[i] );
@@ -308,15 +305,6 @@ class _LoginPageState extends State<LoginPage>{
           ],
         ),
       ),
-      
-
-      /*
-        floatingActionButton: FloatingActionButton(
-          backgroundColor:Color.fromARGB(195, 131, 229, 248).withOpacity(0.6),
-          child: Icon(MdiIcons.plus, color: Colors.white,),
-          onPressed: ()=> _toSignPage(context) //, Provider.of<ListDoctor>(context,listen: false)//),
-          ), */
-
     );
   }//build
   void _toSignPage(BuildContext context){

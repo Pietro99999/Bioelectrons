@@ -11,7 +11,6 @@ import 'package:applab/providers/modifypatient.dart';
 
 //Homepage screen
 class HomePage extends StatelessWidget {
-  //HomePage({Key? key}) : super(key: key);
   String doctorname;
   static const routeDisplayName = 'Doctor';
   HomePage({required this.doctorname});
@@ -23,7 +22,6 @@ class HomePage extends StatelessWidget {
     print('${HomePage.routeDisplayName} built');
     
     return Scaffold(
-      //HomePage.routeDisplayName
       appBar: AppBar(
         title: Text('Dr. '+doctorname  ,
         style: TextStyle(
