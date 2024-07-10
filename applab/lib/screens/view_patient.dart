@@ -63,6 +63,7 @@ class PatientHome extends StatefulWidget {
     String? text = _getText(); 
     String? treatment = widget.modpat.newPatient[widget.patientIndex].drug.toString(); 
     treatment= treatment.replaceAll('[', '').replaceAll(']', '');
+    int currentYear=_focusedDay.year;
     //String treatment = trattamento.replaceAll('[', '').replaceAll(']', '');
    // print('${PatientHome.routeDisplayName} built');
     return Scaffold(
@@ -171,7 +172,9 @@ class PatientHome extends StatefulWidget {
                     text: 'Age: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].age}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                   TextSpan(text: '${ currentYear-int.parse(widget.modpat.newPatient[widget.patientIndex].age)}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+
+
                ],
               ),
            ),
@@ -210,11 +213,12 @@ class PatientHome extends StatefulWidget {
             RichText(
                     textAlign: TextAlign.center,
                     text: TextSpan(
-                    text: 'Starting year of coke assumption: ',
+                    text: 'Duration of addiction: ',
                     style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), 
                     children:  <TextSpan>[ 
-                    TextSpan(text: '${widget.modpat.newPatient[widget.patientIndex].year}  ', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
-               ],
+                  TextSpan(text: '${currentYear-int.parse(widget.modpat.newPatient[widget.patientIndex].year)}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                  TextSpan(text: '${currentYear-int.parse(widget.modpat.newPatient[widget.patientIndex].year)==1 ?' year':' years'}', style: TextStyle(fontWeight: FontWeight.normal, color: const Color.fromARGB(255, 12, 31, 46)), ),
+                    ]
               ),
            ),
 
@@ -256,7 +260,9 @@ class PatientHome extends StatefulWidget {
       
       ),
      ),
-     SizedBox(height: 5,),
+
+
+          SizedBox(height: 5,),
      Text('Select a day to check recorded data', 
      style: const TextStyle(fontSize: 18, color: Color.fromARGB(255, 1, 22, 39),fontWeight: FontWeight.bold), ),
     SizedBox(height:5),

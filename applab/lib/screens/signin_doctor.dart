@@ -202,7 +202,7 @@ class _SignInDoctorState extends State<SignInDoctor>{
          
          (Provider.of<ModifyPatient>(context, listen: false)).newPatient=[];
        //widget.listDoctor.addDoctor(newDoctor);
-           Navigator.push(context, MaterialPageRoute(builder: (context) => HomePage(doctorname: _nameDoctor.text,)));;
+           Navigator.pushReplacement(context, MaterialPageRoute(builder: (context) => HomePage(doctorname: _nameDoctor.text,)));;
        
       
     }

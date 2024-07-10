@@ -100,6 +100,7 @@ class FormNumberTileAge extends ListTile {
   final labelText;
   final icon;
 
+
   FormNumberTileAge({this.icon, this.controller, this.labelText});
 
   @override
@@ -121,8 +122,9 @@ class FormNumberTileAge extends ListTile {
 
                 if(!regex.hasMatch(value!) )
                 ret = 'Must be a number.';
-                else if (double.parse(value)>130)
-                ret = 'Must be a valid age (not allowed >130) ';
+                else if (double.parse(value)<1900 || double.parse(value)>2009)
+                ret = 'Must be a valid year (between 1900 and 2009';
+                
                 return ret;
                
               
@@ -227,9 +229,9 @@ class FormNumberTileHeight extends ListTile {
                 String pattern = r'^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$';
                 RegExp regex = RegExp(pattern);
 
-                if(!regex.hasMatch(value!) )
+                if(!regex.hasMatch(value!))
                 ret = 'Must be a number.';
-                else if (120>double.parse(value) || double.parse(value)>250)
+                else if (120>double.parse(value) || double.parse(value)>250 )
                 ret = 'Height must be between 120 and 250 cm';
                 return ret;
               
@@ -259,8 +261,9 @@ class FormNumberTileYear extends ListTile {
   final controller;
   final labelText;
   final icon;
+  final controller2;
 
-  FormNumberTileYear({this.icon, this.controller, this.labelText});
+  FormNumberTileYear({this.icon, this.controller, this.labelText, this.controller2});
 
   @override
   Widget build(BuildContext context) {
@@ -282,7 +285,9 @@ class FormNumberTileYear extends ListTile {
                 if(!regex.hasMatch(value!) )
                 ret = 'Must be a number.';
                 else if (1940>double.parse(value)|| double.parse(value)>2024)
-                ret = 'Valid year between 1940 and now';
+                ret = 'Valid year between 1940 and now ';
+                else if (int.parse(controller2.text)+13>int.parse(value))
+                ret = 'Year must be greater than birth year+13';
                 return ret;
 
                

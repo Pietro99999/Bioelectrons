@@ -42,8 +42,8 @@ List<String> treat = ['Yes', 'No'];
 Map<String, bool> drug = {
   'No': false,
   'Benzodiazepine': false,
-  'Bromocriptina': false,
-  'Amantadina': false
+  'Bromocriptine': false,
+  'Amantadine': false
 };
 List<dynamic> _drugtreat=[]; 
 
@@ -56,7 +56,7 @@ class _PatientPage extends State<PatientPage> {
   TextEditingController _controllerWeight = TextEditingController();
   TextEditingController _controllerHeight = TextEditingController();
   TextEditingController _controllerYear = TextEditingController();
-  bool _controllerSex = true;
+  bool? _controllerSex;
   String _currentOption = gravity[0];
   String _underTreatment = treat[0];
 
@@ -82,11 +82,12 @@ class _PatientPage extends State<PatientPage> {
     _controllerAge.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].age.toString();
     _controllerWeight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].weight.toString();
     _controllerHeight.text = widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].height.toString();
-    _controllerSex= widget.patientIndex == -1 ? true : widget.modpat.newPatient[widget.patientIndex].sex;
+    _controllerSex= widget.patientIndex == -1 ? null : widget.modpat.newPatient[widget.patientIndex].sex;
     _controllerYear.text= widget.patientIndex == -1 ? '' : widget.modpat.newPatient[widget.patientIndex].year.toString();
     _currentOption= widget.patientIndex == -1 ? gravity[0] : widget.modpat.newPatient[widget.patientIndex].grav.toString();
     _underTreatment= widget.patientIndex == -1 ? treat[0] : widget.modpat.newPatient[widget.patientIndex].treatm.toString();
-     if (widget.patientIndex == -1) {widget.button.bottonState() == false;}else{   widget.button.bottonState() == true;}
+
+    if (widget.patientIndex == -1) {widget.button.bottonState()== false;}else{  widget.button.bottonState() == true;}
     if (widget.patientIndex == -1) {
       _drugtreat = [];
     } else {
@@ -94,7 +95,7 @@ class _PatientPage extends State<PatientPage> {
     
     }
     if (widget.patientIndex == -1) {
-      drug = {'No':false, 'Benzodiazepine':false,'Bromocriptina':false,'Amantadina':false};
+      drug = {'No':false, 'Benzodiazepine':false,'Bromocriptine':false,'Amantadine':false};
     } else {
       if (_drugtreat.contains('Benzodiazepine')==true){
        drug['Benzodiazepine']= true;
@@ -102,12 +103,12 @@ class _PatientPage extends State<PatientPage> {
        if (_drugtreat.contains('No')==true){
         drug['No']= true;
       }
-        if (_drugtreat.contains('Bromocriptina')==true){
-        drug['Bromocriptina']= true;
+        if (_drugtreat.contains('Bromocriptine')==true){
+        drug['Bromocriptine']= true;
         }
         if (_drugtreat.contains('Amantidina')==true){
 
-        drug['Amantadina']= true;
+        drug['Amantadine']= true;
         }
 
         }
@@ -198,7 +199,7 @@ class _PatientPage extends State<PatientPage> {
               height: 30,
             ),
             FormNumberTileAge(
-              labelText: 'Age',
+              labelText: 'Birth year',
               controller: _controllerAge,
               icon: MdiIcons.cake,
             ),
@@ -274,9 +275,10 @@ class _PatientPage extends State<PatientPage> {
               height: 30,
             ),
             FormNumberTileYear(
-              labelText: 'Starting year of coke assumption',
+              labelText: 'Starting year of coke use',
               controller: _controllerYear,
               icon: MdiIcons.calendarAccount,
+              controller2:_controllerAge,
             ),
             SizedBox(
               height: 30,
@@ -448,7 +450,9 @@ class _PatientPage extends State<PatientPage> {
                   if (_underTreatment == 'Yes')
                     Column(
                       children: <Widget>[
+
                         CheckboxListTile(
+                          enabled: drug['Benzodiazepine']==true || drug['Bromocriptine']==true || drug['Amantadine']==true? false :true,
                           title: Text(
                             'No',
                             style: TextStyle(color: Colors.white, fontSize: 18),
@@ -480,6 +484,7 @@ class _PatientPage extends State<PatientPage> {
                           },
                         ),
                         CheckboxListTile(
+                          enabled: drug['No']==true ? false :true,
                           title: Text(
                             'Benzodiazepine',
                             style: TextStyle(color: Colors.white),
@@ -490,6 +495,7 @@ class _PatientPage extends State<PatientPage> {
                               color: Colors.white,
                               style: BorderStyle.solid),
                           controlAffinity: ListTileControlAffinity.leading,
+                          
                           fillColor:
                               MaterialStateProperty.resolveWith((states) {
                             if (states.contains(MaterialState.selected)) {
@@ -512,11 +518,13 @@ class _PatientPage extends State<PatientPage> {
                           },
                         ),
                         CheckboxListTile(
+                           //tristate: true,
+                           enabled: drug['No']==true || drug['Amantadine']==true  ? false :true,
                           title: Text(
-                            'Bromocriptina',
+                            'Bromocriptine',
                             style: TextStyle(color: Colors.white),
                           ),
-                          value: drug['Bromocriptina'],
+                          value: drug['Bromocriptine'],
                           side: BorderSide(
                               width: 3,
                               color: Colors.white,
@@ -532,23 +540,25 @@ class _PatientPage extends State<PatientPage> {
                           }),
                           onChanged: (value) {
                             setState(() {
-                              if (drug['Bromocriptina'] = value!) {
-                                _drugtreat.add('Bromocriptina');
+                              if (drug['Bromocriptine'] = value!) {
+                                _drugtreat.add('Bromocriptine');
                               } else {
-                                if (_drugtreat.contains('Bromocriptina') ==
+                                if (_drugtreat.contains('Bromocriptine') ==
                                     true) {
-                                  _drugtreat.remove('Bromocriptina');
+                                  _drugtreat.remove('Bromocriptine');
                                 }
                               }
                             });
                           },
                         ),
                         CheckboxListTile(
+                          
+                          enabled: drug['No']==true || drug['Bromocriptine']==true  ? false :true,
                           title: Text(
-                            'Amantadina',
+                            'Amantadine',
                             style: TextStyle(color: Colors.white),
                           ),
-                          value: drug['Amantadina'],
+                          value: drug['Amantadine'],
                           side: BorderSide(
                               width: 3,
                               color: Colors.white,
@@ -564,11 +574,11 @@ class _PatientPage extends State<PatientPage> {
                           }),
                           onChanged: (value) {
                             setState(() {
-                              if (drug['Amantadina'] = value!) {
-                                _drugtreat.add('Amantadina');
+                              if (drug['Amantadine'] = value!) {
+                                _drugtreat.add('Amantadine');
                               } else {
-                                if (_drugtreat.contains('Amantadina') == true) {
-                                  _drugtreat.remove('Amantadina');
+                                if (_drugtreat.contains('Amantadine') == true) {
+                                  _drugtreat.remove('Amantadine');
                                 }
                               }
                             });
@@ -582,6 +592,7 @@ class _PatientPage extends State<PatientPage> {
                     Column(
                       children: <Widget>[
                         CheckboxListTile(
+                           enabled: drug['Benzodiazepine']==true || drug['Bromocriptine']==true || drug['Amantadine']==true? false :true,
                           title: RichText(
                             text: TextSpan(
                               text: 'No ',
@@ -624,6 +635,7 @@ class _PatientPage extends State<PatientPage> {
                           },
                         ),
                         CheckboxListTile(
+                           enabled: drug['No']==true ? false :true,
                           title: RichText(
                             text: TextSpan(
                               text: 'Benzodiazepine ',
@@ -672,9 +684,10 @@ class _PatientPage extends State<PatientPage> {
                           },
                         ),
                         CheckboxListTile(
+                          enabled: drug['No']==true || drug['Amantadine']==true  ? false :true,
                           title: RichText(
                             text: TextSpan(
-                              text: 'Bromocriptina ',
+                              text: 'Bromocriptine ',
                               style: const TextStyle(
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   fontSize: 18),
@@ -692,7 +705,7 @@ class _PatientPage extends State<PatientPage> {
                               ],
                             ),
                           ),
-                          value: drug['Bromocriptina'],
+                          value: drug['Bromocriptine'],
                           side: BorderSide(
                               width: 3,
                               color: Colors.white,
@@ -708,21 +721,22 @@ class _PatientPage extends State<PatientPage> {
                           }),
                           onChanged: (bool? value) {
                             setState(() {
-                              if (drug['Bromocriptina'] = value!) {
-                                _drugtreat.add('Bromocriptina');
+                              if (drug['Bromocriptine'] = value!) {
+                                _drugtreat.add('Bromocriptine');
                               } else {
-                                if (_drugtreat.contains('Bromocriptina') ==
+                                if (_drugtreat.contains('Bromocriptine') ==
                                     true) {
-                                  _drugtreat.remove('Bromocriptina');
+                                  _drugtreat.remove('Bromocriptine');
                                 }
                               }
                             });
                           },
                         ),
                         CheckboxListTile(
+                          enabled: drug['No']==true || drug['Bromocriptine']==true  ? false :true,
                           title: RichText(
                             text: TextSpan(
-                              text: 'Amantadina ',
+                              text: 'Amantadine ',
                               style: const TextStyle(
                                   color: Color.fromARGB(255, 255, 255, 255),
                                   fontSize: 18),
@@ -735,7 +749,7 @@ class _PatientPage extends State<PatientPage> {
                               ],
                             ),
                           ),
-                          value: drug['Amantadina'],
+                          value: drug['Amantadine'],
                           controlAffinity: ListTileControlAffinity.leading,
                           side: BorderSide(
                               width: 3,
@@ -751,11 +765,11 @@ class _PatientPage extends State<PatientPage> {
                           }),
                           onChanged: (bool? value) {
                             setState(() {
-                              if (drug['Amantadina'] = value!) {
-                                _drugtreat.add('Amantadina');
+                              if (drug['Amantadine'] = value!) {
+                                _drugtreat.add('Amantadine');
                               } else {
-                                if (_drugtreat.contains('Amantadina') == true) {
-                                  _drugtreat.remove('Amantadina');
+                                if (_drugtreat.contains('Amantadine') == true) {
+                                  _drugtreat.remove('Amantadine');
                                 }
                               }
                             });
@@ -776,7 +790,9 @@ class _PatientPage extends State<PatientPage> {
 
   //Utility method that validate the form and, if it is valid, save the new patient information.
   void _validateAndSave(BuildContext context) async {
-    if (widget.button.bottonState() != true) {
+    bool yearval=true;
+     bool butnStat=true;
+    if (widget.patientIndex == -1 && widget.button.bottonState() != true) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(
@@ -788,14 +804,34 @@ class _PatientPage extends State<PatientPage> {
           backgroundColor: const Color.fromARGB(255, 234, 119, 110),
         ),
       );
-    }
-    if (widget.button.bottonStateM() == true) {
-      _controllerSex = false;
-    } else {
-      _controllerSex = true;
+      bool butnStat=false;
     }
 
-    if (formKey.currentState!.validate() && widget.button.bottonState() == true) {
+    if (widget.button.bottonStateM() == true && widget.button.bottonStateF() == false  ) {
+      _controllerSex = false;
+    } 
+    if(widget.button.bottonStateF() == true && widget.button.bottonStateM() == false  ) {
+      _controllerSex = true;
+    }
+    
+    
+    if(int.parse(_controllerAge.text)+13>(int.parse(_controllerYear.text))){
+    /* 
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+          content: Text(
+           textAlign: TextAlign.center,
+            'Year must be greater than birth year +13',
+            style: TextStyle(color: const Color.fromARGB(255, 122, 22, 15),fontWeight:FontWeight.bold, fontSize: 16)
+          ),
+          closeIconColor: Colors.amber,
+          backgroundColor: const Color.fromARGB(255, 234, 119, 110),
+        ),
+      );*/
+      yearval=false;
+    }
+
+    if (formKey.currentState!.validate() && butnStat && yearval==true) {
       //print(currentOption);
       final sharedPreferences = await SharedPreferences.getInstance();
       String? elemntname = await sharedPreferences.getString('USERNAMELOGGED');
@@ -804,7 +840,7 @@ class _PatientPage extends State<PatientPage> {
           age: _controllerAge.text,
           weight: _controllerWeight.text,
           height: _controllerHeight.text,
-          sex: _controllerSex,
+          sex: _controllerSex!,
           year: _controllerYear.text,
           grav: _currentOption,
           treatm: _underTreatment,
@@ -814,7 +850,7 @@ class _PatientPage extends State<PatientPage> {
           _controllerAge.text,
           _controllerWeight.text,
           _controllerHeight.text,
-          _controllerSex,
+          _controllerSex!,
           _controllerYear.text,
           _currentOption,
           _underTreatment,
