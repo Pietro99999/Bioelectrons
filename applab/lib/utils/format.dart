@@ -11,13 +11,15 @@ import 'package:step_progress_indicator/step_progress_indicator.dart';
 ///Class that implements a custom [StatelessWidget] that acts as a separator in a [Form].
 ///It can be used to separate "categories" in a [Form].
 class FormSeparator extends StatelessWidget {
-
+ 
   final label;
+
 
   FormSeparator({this.label});
 
   @override
   Widget build(BuildContext context) {
+    
     return Center(
       child: Column(
         children: [
@@ -63,11 +65,13 @@ class FormTextTile extends ListTile {
   final controller;
   final labelText;
   final icon;
+  
 
   FormTextTile({this.icon, this.controller, this.labelText});
 
   @override
   Widget build(BuildContext context) {
+  
     Size screenSize = MediaQuery.of(context).size;
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
@@ -102,9 +106,11 @@ class FormNumberTileAge extends ListTile {
 
 
   FormNumberTileAge({this.icon, this.controller, this.labelText});
+  DateTime _focusedDay = DateTime.now();
 
   @override
   Widget build(BuildContext context) {
+   int yearnow=_focusedDay.year;
     Size screenSize = MediaQuery.of(context).size;
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
@@ -117,13 +123,14 @@ class FormNumberTileAge extends ListTile {
               controller: controller,
               validator: (value) {
                 String? ret;
+               
                 String pattern = r'^(0*[1-9][0-9]*(\.[0-9]*)?|0*\.[0-9]*[1-9][0-9]*)$';
                 RegExp regex = RegExp(pattern);
 
                 if(!regex.hasMatch(value!) )
                 ret = 'Must be a number.';
-                else if (double.parse(value)<1900 || double.parse(value)>2009)
-                ret = 'Must be a valid year (between 1900 and 2009';
+                else if (double.parse(value)<1900 || double.parse(value)>(yearnow-13))
+                ret = 'Valid year: between 1900 and ${yearnow-13}';
                 
                 return ret;
                
@@ -178,7 +185,7 @@ class FormNumberTileWeight extends ListTile {
                 if(!regex.hasMatch(value!) )
                 ret = 'Must be a number.';
                 else if (20>double.parse(value) || double.parse(value)>500)
-                ret = 'Weight must be between 20 and 500 kg';
+                ret = 'Weight must be between 25 kg and 500 kg';
                 return ret;
               
               },
@@ -232,7 +239,7 @@ class FormNumberTileHeight extends ListTile {
                 if(!regex.hasMatch(value!))
                 ret = 'Must be a number.';
                 else if (120>double.parse(value) || double.parse(value)>250 )
-                ret = 'Height must be between 120 and 250 cm';
+                ret = 'Height must be between 120 cm and 250 cm';
                 return ret;
               
               },
@@ -264,9 +271,10 @@ class FormNumberTileYear extends ListTile {
   final controller2;
 
   FormNumberTileYear({this.icon, this.controller, this.labelText, this.controller2});
-
+ DateTime _focusedDay = DateTime.now();
   @override
   Widget build(BuildContext context) {
+    int yearnow=_focusedDay.year;
     Size screenSize = MediaQuery.of(context).size;
     return ListTile(
       leading: Icon(icon, color: Theme.of(context).colorScheme.secondary),
@@ -285,9 +293,15 @@ class FormNumberTileYear extends ListTile {
                 if(!regex.hasMatch(value!) )
                 ret = 'Must be a number.';
                 else if (1940>double.parse(value)|| double.parse(value)>2024)
-                ret = 'Valid year between 1940 and now ';
-                else if (int.parse(controller2.text)+13>int.parse(value))
-                ret = 'Year must be greater than birth year+13';
+                ret = 'Valid year between 1940 and $yearnow';
+                else if (int.parse(controller2.text)+13>int.parse(value)){
+                  if(int.parse(controller2.text)>(yearnow-13)){
+                    ret='Choose a valid birth year';
+                  }else{
+
+                ret = 'Year must be greater than ${int.parse(controller2.text)+13}';
+                }
+                }
                 return ret;
 
                

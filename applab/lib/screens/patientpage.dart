@@ -816,18 +816,6 @@ class _PatientPage extends State<PatientPage> {
     
     
     if(int.parse(_controllerAge.text)+13>(int.parse(_controllerYear.text))){
-    /* 
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: Text(
-           textAlign: TextAlign.center,
-            'Year must be greater than birth year +13',
-            style: TextStyle(color: const Color.fromARGB(255, 122, 22, 15),fontWeight:FontWeight.bold, fontSize: 16)
-          ),
-          closeIconColor: Colors.amber,
-          backgroundColor: const Color.fromARGB(255, 234, 119, 110),
-        ),
-      );*/
       yearval=false;
     }
 
